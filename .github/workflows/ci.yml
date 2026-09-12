@@ -3,9 +3,12 @@ name: CI
 # Three things can break here independently: the Python runtime, the meshes,
 # and the generated documentation. They get three jobs so a red badge says
 # which one.
+# Pushes to main, and pull requests. Not `branches: ["**"]` on push: a
+# branch with an open PR would then run the whole thing twice on one commit,
+# and the CAD job alone is five minutes.
 on:
   push:
-    branches: ["**"]
+    branches: [main]
   pull_request:
 
 permissions:
