@@ -228,3 +228,6 @@ pca_hole_dx    = 57.9;
 pca_hole_dy    = 20.3;
 // Pololu step-down regulator boards (2 mounting holes)
 buck_hole_dx   = 38.1;   // 1.5in between the two mounting holes
+
+// Camera Module 3 FPC tail width, used only by the component stand-ins.
+cam_ffc_w_render = 16.0;

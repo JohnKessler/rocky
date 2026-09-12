@@ -99,7 +99,10 @@ docs/            build guides and architecture notes
 hardware/
   cad/           OpenSCAD source - rocky_params.scad holds every dimension
   stl/           exported, validated meshes
-  img/           assembly renders
+  wiring/        the wiring as data; generates the diagrams and the tables
+  img/           assembly renders and wiring diagrams
+  update_docs.py folds both into the guides
+  README.md      how the graphics are generated
 software/rocky/
   core/          event bus and service lifecycle
   face/          expressions, geometry, renderers

@@ -57,8 +57,8 @@ any approved reseller) · **WS** Waveshare · **\*** generic, buy anywhere.
 
 | # | Part | Specification | Where | ~Cost |
 |---|------|---------------|-------|-------|
-| 5.1 | MAX98357A I²S class-D amplifier | 3 W into 4 Ω, I²S in. The Pi 5 has no headphone jack, so something like this is required rather than optional. | AF 3006 / SF | £6 |
-| 5.2 | Speaker, 40 mm, 4 Ω, 3 W | Mounts in the base floor, firing down into the gap the legs hold open. Frame diameter feeds `spk_d`. | AF 3968 / \* | £4 |
+| 5.1 | MAX98357A I²S class-D amplifier | 3 W into 4 Ω, I²S in. The Pi 5 has no headphone jack, so this is required rather than optional. Mounts in the **head**, beside the Pi — that way the pan joint carries two analogue speaker conductors instead of five digital ones. | AF 3006 / SF | £6 |
+| 5.2 | Speaker, 40 mm, 4 Ω, 3 W | Mounts in the **base** floor, firing down into the gap the legs hold open. Frame diameter feeds `spk_d`. | AF 3968 / \* | £4 |
 | 5.3 | USB microphone | Anything that enumerates as a USB audio input. A small far-field array (ReSpeaker USB Mic Array, or similar) is a large improvement over a single capsule if Rocky sits more than a metre away. Body diameter feeds `usb_mic_d` in `mic_mount.scad`. | AF 3367 / \* | £8–£55 |
 | 5.4 | USB-A right-angle adapter or short extension | The Pi's ports face sideways inside the head; a straight plug fouls the shell. | \* | £3 |
 

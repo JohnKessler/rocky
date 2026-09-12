@@ -3,6 +3,13 @@
 Every connection in Rocky, and the handful of config lines that make the Pi
 recognise the hardware.
 
+<!-- wiring:interconnect -->
+![interconnect diagram](../hardware/img/wiring-interconnect.svg)
+<!-- /wiring -->
+
+The three diagrams and every table in this document are generated from one
+description of the electrics — see [hardware/README.md](../hardware/README.md).
+
 Work through this with the robot **unpowered and unassembled**. Getting the
 electronics working on the bench, with `rocky check` reporting everything real,
 is far easier than debugging it inside a closed head.
@@ -10,6 +17,10 @@ is far easier than debugging it inside a closed head.
 ---
 
 ## Power
+
+<!-- wiring:power -->
+![power diagram](../hardware/img/wiring-power.svg)
+<!-- /wiring -->
 
 One 12 V input feeds two regulators. The Pi and the servos never share a rail,
 which is what stops a servo stalling from browning out the Pi mid-sentence.
@@ -42,26 +53,36 @@ no reference and the servos will twitch continuously.
 
 ## GPIO header
 
-Only seven pins are used. The Qwiic SHIM sits over the first few and the rest
-are wired directly — this is exactly why the design uses a SHIM rather than a
-HAT for I²C, since a HAT would cover the header the amplifier needs.
+<!-- wiring:gpio -->
+![gpio diagram](../hardware/img/wiring-gpio.svg)
+<!-- /wiring -->
 
-| Pi pin | Signal | Goes to | Wire |
-|--------|--------|---------|------|
-| 1 | 3V3 | Qwiic SHIM | *(via SHIM)* |
-| 3 | GPIO2 / SDA1 | Qwiic SHIM | *(via SHIM)* |
-| 5 | GPIO3 / SCL1 | Qwiic SHIM | *(via SHIM)* |
-| 9 | GND | Qwiic SHIM | *(via SHIM)* |
-| 4 | 5V | MAX98357A **Vin** | 26 AWG red |
-| 6 | GND | MAX98357A **GND** | 26 AWG black |
-| 12 | GPIO18 / PCM_CLK | MAX98357A **BCLK** | 26 AWG |
-| 35 | GPIO19 / PCM_FS | MAX98357A **LRC** | 26 AWG |
-| 40 | GPIO21 / PCM_DOUT | MAX98357A **DIN** | 26 AWG |
+Nine pins are used: four to the Qwiic SHIM, five to the amplifier. The SHIM
+sits over the first few and the rest are wired directly — which is exactly why
+the design uses a SHIM rather than a HAT for I²C, since a HAT would cover the
+header the amplifier needs.
+
+<!-- tables:gpio -->
+| Pin | Signal | Goes to |
+|-----|--------|---------|
+| 1 | 3V3 | Qwiic SHIM |
+| 3 | GPIO2 / SDA1 | Qwiic SHIM |
+| 4 | 5V | amplifier Vin |
+| 5 | GPIO3 / SCL1 | Qwiic SHIM |
+| 6 | GND | amplifier GND |
+| 9 | GND | Qwiic SHIM |
+| 12 | GPIO18 / PCM_CLK | amplifier BCLK |
+| 35 | GPIO19 / PCM_FS | amplifier LRC |
+| 40 | GPIO21 / PCM_DOUT | amplifier DIN |
+<!-- /tables -->
 
 Leave the amplifier's **GAIN** and **SD** pins unconnected. Floating gives 9 dB
 and mono `(L+R)/2`, which is what you want from a single speaker.
 
 ### Amplifier to speaker
+
+The amplifier is in the **head**; the speaker is in the **base**. These two
+conductors are part of the pan-joint harness.
 
 | MAX98357A | Speaker |
 |-----------|---------|
@@ -70,6 +91,11 @@ and mono `(L+R)/2`, which is what you want from a single speaker.
 
 Not polarity critical with one driver, but stay consistent so a future second
 speaker is in phase.
+
+Putting the amplifier in the head is deliberate. With it beside the speaker,
+BCLK, LRC, DIN and its supply — five conductors, one of them a 3 MHz clock —
+would all have to cross a joint that flexes every time Rocky turns. Analogue
+speaker output over the same joint is a far easier life.
 
 ---
 
@@ -135,15 +161,23 @@ returns nothing — both of which look like software faults and are not.
 
 ## The pan-joint harness
 
-Nine conductors cross the rotating joint, from the base to the head:
+Eleven conductors cross the rotating joint, between the base and the head:
 
+<!-- tables:harness -->
 | Conductor | Gauge | Purpose |
 |-----------|-------|---------|
-| 5.1 V | 20 AWG | Pi supply |
+| 5.1V | 20 AWG | Pi supply |
 | GND | 20 AWG | Pi supply return |
 | GND | 20 AWG | signal ground |
-| SDA, SCL, 3V3 | 26 AWG | I²C down to the PCA9685 |
-| Tilt signal, V+, GND | 26 AWG | tilt servo |
+| SDA | 26 AWG | I2C to the servo driver |
+| SCL | 26 AWG | I2C to the servo driver |
+| 3V3 | 26 AWG | I2C logic level |
+| Tilt signal | 26 AWG | PWM to the tilt servo |
+| Tilt V+ | 26 AWG | 6V to the tilt servo |
+| Tilt GND | 26 AWG | tilt servo return |
+| Speaker + | 22 AWG | amplifier output, head to base |
+| Speaker - | 22 AWG | amplifier output return |
+<!-- /tables -->
 
 **Use silicone-insulated wire.** This bundle flexes every time Rocky turns —
 thousands of cycles a week. PVC hookup wire work-hardens and eventually cracks
@@ -156,6 +190,36 @@ the base. Rotate the head fully both ways by hand before closing anything up and
 watch that the bundle coils and uncoils rather than pulling taut or snagging.
 The printed stop post limits pan to ±100° so the harness can never be wrung, but
 it will not save a harness that was too short to begin with.
+
+---
+
+## Every connection
+
+The complete list, generated from the same data as the diagrams above.
+
+<!-- tables:connections -->
+| From | To | Carries | Wire | Note |
+|------|-----|---------|------|------|
+| 12V 5A supply | 3A fuse | 12V | 18 AWG | — |
+| 3A fuse | power switch | 12V | 18 AWG | — |
+| power switch | 5.1V 5A regulator | 12V | 18 AWG | — |
+| power switch | 6.0V 3A regulator | 12V | 18 AWG | — |
+| 5.1V 5A regulator | Raspberry Pi 5 | 5.1V to USB-C | 20 AWG | crosses the pan joint |
+| 6.0V 3A regulator | PCA9685 servo driver | 6.0V to V+ | 20 AWG | — |
+| 6.0V 3A regulator | 470uF capacitor | across V+ | — | — |
+| Raspberry Pi 5 | Qwiic SHIM | GPIO2 / SDA | — | — |
+| Qwiic SHIM | PCA9685 servo driver | SDA | 26 AWG | crosses the pan joint |
+| Qwiic SHIM | PCA9685 servo driver | SCL | 26 AWG | crosses the pan joint |
+| Qwiic SHIM | PCA9685 servo driver | 3V3 logic | 26 AWG | crosses the pan joint |
+| Raspberry Pi 5 | MAX98357A amplifier | I2S: BCLK, LRC, DIN | 26 AWG | — |
+| Raspberry Pi 5 | MAX98357A amplifier | 5V + GND | 26 AWG | — |
+| MAX98357A amplifier | 40mm speaker | 4 ohm, 3W | 22 AWG | crosses the pan joint |
+| PCA9685 servo driver | pan servo | channel 0 | — | — |
+| PCA9685 servo driver | tilt servo | channel 1 | 26 AWG | crosses the pan joint |
+| Raspberry Pi 5 | round display | DSI, 22 to 15 pin | — | CAM/DISP 1 |
+| Raspberry Pi 5 | Camera Module 3 | CSI, 22 to 15 pin | — | CAM/DISP 0 |
+| Raspberry Pi 5 | USB microphone | USB | — | — |
+<!-- /tables -->
 
 ---
 

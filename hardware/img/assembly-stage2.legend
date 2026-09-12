@@ -1,0 +1,4 @@
+1|speaker, magnet up
+2|PCA9685 servo driver
+3|5.1V regulator, feeds the Pi
+4|6.0V regulator, feeds the servos

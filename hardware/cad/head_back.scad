@@ -177,6 +177,24 @@ module faceplate_posts() {
     }
 }
 
+// The I2S amplifier, on the rear wall above the Pi.
+//
+// It started in the base next to the speaker, which meant BCLK, LRC and DIN
+// had to cross the rotating pan joint. Putting it here sends two analogue
+// speaker conductors across instead of five digital ones, and keeps 3MHz
+// square waves off a harness that flexes every time Rocky turns.
+module amp_pads() {
+    for (x = [-7.62, 7.62])
+        translate([x, y_rear + wall - eps, 47]) rotate([-90, 0, 0])
+            difference() {
+                union() {
+                    cylinder(d = 6.5, h = 6);
+                    cylinder(d1 = 9.5, d2 = 6.5, h = 2.2);
+                }
+                translate([0, 0, 6 - 4.2]) cylinder(d = m2_insert_d, h = 4.4);
+            }
+}
+
 module trim_post() {
     translate([0, y_rear + wall - eps, -50]) rotate([-90, 0, 0])
         difference() {
@@ -216,6 +234,7 @@ difference() {
         faceplate_posts();
         trim_post();
         camera_posts();
+        amp_pads();
     }
     tilt_servo_negatives();
     tilt_pivot_negative();

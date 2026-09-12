@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1260 900" width="1260" height="900" role="img" aria-label="Every board in Rocky and the wires between them, split into the head and the base, with the eleven-conductor harness that crosses the rotating pan joint.">
+  <title>Rocky interconnect</title>
+  <desc>Every board in Rocky and the wires between them, split into the head and the base, with the eleven-conductor harness that crosses the rotating pan joint.</desc>
+  <defs><marker id="tip" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#1b2430"/></marker></defs>
+  <rect width="1260" height="900" fill="#ffffff"/>
+  <text x="40" y="44" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1b2430" text-anchor="start" opacity="1.0">What connects to what</text>
+  <text x="40" y="68" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5b6878" text-anchor="start" opacity="1.0">The head turns. Every wire between the two halves has to survive that, thousands of times a week.</text>
+  <rect x="40" y="100" width="1180" height="296" rx="12" fill="#f7f9fc" stroke="#c9d3e0" stroke-width="1.5"/>
+  <text x="60" y="126" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#5b6878" text-anchor="start" opacity="1.0">HEAD</text>
+  <text x="60" y="144" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#5b6878" text-anchor="start" opacity="1.0">turns with the pan servo</text>
+  <rect x="40" y="560" width="1180" height="290" rx="12" fill="#f7f9fc" stroke="#c9d3e0" stroke-width="1.5"/>
+  <text x="60" y="586" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#5b6878" text-anchor="start" opacity="1.0">BASE</text>
+  <text x="60" y="604" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#5b6878" text-anchor="start" opacity="1.0">fixed to the desk</text>
+  <rect x="150" y="166" width="190" height="58" rx="8" fill="#f2f5f9" stroke="#c9d3e0" stroke-width="1.5"/>
+  <path d="M 150 174 L 150 216" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/>
+  <text x="164" y="194.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#1b2430" text-anchor="start" opacity="1.0">round display</text>
+  <text x="164" y="211.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6878" text-anchor="start" opacity="1.0">DSI ribbon</text>
+  <rect x="150" y="252" width="190" height="58" rx="8" fill="#f2f5f9" stroke="#c9d3e0" stroke-width="1.5"/>
+  <path d="M 150 260 L 150 302" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/>
+  <text x="164" y="280.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#1b2430" text-anchor="start" opacity="1.0">Camera Module 3</text>
+  <text x="164" y="297.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6878" text-anchor="start" opacity="1.0">CSI ribbon</text>
+  <rect x="150" y="330" width="190" height="52" rx="8" fill="#f2f5f9" stroke="#c9d3e0" stroke-width="1.5"/>
+  <path d="M 150 338 L 150 374" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/>
+  <text x="164" y="361.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#1b2430" text-anchor="start" opacity="1.0">USB microphone</text>
+  <rect x="480" y="196" width="220" height="96" rx="8" fill="#f2f5f9" stroke="#c9d3e0" stroke-width="1.5"/>
+  <path d="M 480 204 L 480 284" stroke="#0f7b8a" stroke-width="4" stroke-linecap="round"/>
+  <text x="494" y="243.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#1b2430" text-anchor="start" opacity="1.0">Raspberry Pi 5</text>
+  <text x="494" y="260.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6878" text-anchor="start" opacity="1.0">the only computer</text>
+  <rect x="850" y="166" width="200" height="58" rx="8" fill="#f2f5f9" stroke="#c9d3e0" stroke-width="1.5"/>
+  <path d="M 850 174 L 850 216" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+  <text x="864" y="194.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#1b2430" text-anchor="start" opacity="1.0">MAX98357A amp</text>
+  <text x="864" y="211.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6878" text-anchor="start" opacity="1.0">I2S in, 3W out</text>
+  <rect x="850" y="252" width="200" height="58" rx="8" fill="#f2f5f9" stroke="#c9d3e0" stroke-width="1.5"/>
+  <path d="M 850 260 L 850 302" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+  <text x="864" y="280.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#1b2430" text-anchor="start" opacity="1.0">Qwiic SHIM</text>
+  <text x="864" y="297.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6878" text-anchor="start" opacity="1.0">I2C off the header</text>
+  <rect x="850" y="330" width="200" height="52" rx="8" fill="#f2f5f9" stroke="#c9d3e0" stroke-width="1.5"/>
+  <path d="M 850 338 L 850 374" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+  <text x="864" y="355.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#1b2430" text-anchor="start" opacity="1.0">tilt servo</text>
+  <text x="864" y="372.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6878" text-anchor="start" opacity="1.0">channel 1</text>
+  <rect x="150" y="640" width="190" height="58" rx="8" fill="#f2f5f9" stroke="#c9d3e0" stroke-width="1.5"/>
+  <path d="M 150 648 L 150 690" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+  <text x="164" y="668.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#1b2430" text-anchor="start" opacity="1.0">pan servo</text>
+  <text x="164" y="685.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6878" text-anchor="start" opacity="1.0">channel 0</text>
+  <rect x="480" y="620" width="220" height="96" rx="8" fill="#f2f5f9" stroke="#c9d3e0" stroke-width="1.5"/>
+  <path d="M 480 628 L 480 708" stroke="#0f7b8a" stroke-width="4" stroke-linecap="round"/>
+  <text x="494" y="667.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#1b2430" text-anchor="start" opacity="1.0">PCA9685</text>
+  <text x="494" y="684.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6878" text-anchor="start" opacity="1.0">16 channels, 2 used</text>
+  <rect x="850" y="640" width="200" height="58" rx="8" fill="#f2f5f9" stroke="#c9d3e0" stroke-width="1.5"/>
+  <path d="M 850 648 L 850 690" stroke="#16a34a" stroke-width="4" stroke-linecap="round"/>
+  <text x="864" y="668.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#1b2430" text-anchor="start" opacity="1.0">40mm speaker</text>
+  <text x="864" y="685.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6878" text-anchor="start" opacity="1.0">fires down</text>
+  <rect x="150" y="752" width="190" height="52" rx="8" fill="#f2f5f9" stroke="#c9d3e0" stroke-width="1.5"/>
+  <path d="M 150 760 L 150 796" stroke="#dc2626" stroke-width="4" stroke-linecap="round"/>
+  <text x="164" y="777.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#1b2430" text-anchor="start" opacity="1.0">5.1V regulator</text>
+  <text x="164" y="794.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6878" text-anchor="start" opacity="1.0">feeds the Pi</text>
+  <rect x="480" y="752" width="220" height="52" rx="8" fill="#f2f5f9" stroke="#c9d3e0" stroke-width="1.5"/>
+  <path d="M 480 760 L 480 796" stroke="#b91c1c" stroke-width="4" stroke-linecap="round"/>
+  <text x="494" y="777.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#1b2430" text-anchor="start" opacity="1.0">6.0V regulator</text>
+  <text x="494" y="794.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5b6878" text-anchor="start" opacity="1.0">feeds the servos</text>
+  <path d="M 340 195 L 410 195 L 410 228 L 480 228" fill="none" stroke="#7c3aed" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+  <text x="419" y="215.5" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="11.5" font-weight="500" fill="#5b6878" text-anchor="start" opacity="1.0">DSI</text>
+  <path d="M 340 281 L 410 281 L 410 260 L 480 260" fill="none" stroke="#7c3aed" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+  <text x="419" y="274.5" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="11.5" font-weight="500" fill="#5b6878" text-anchor="start" opacity="1.0">CSI</text>
+  <path d="M 340 356 L 440 356 L 440 284 L 480 284" fill="none" stroke="#7c3aed" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+  <text x="449" y="324.0" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="11.5" font-weight="500" fill="#5b6878" text-anchor="start" opacity="1.0">USB</text>
+  <path d="M 700 216 L 780 216 L 780 195 L 850 195" fill="none" stroke="#2563eb" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+  <text x="789" y="209.5" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="11.5" font-weight="500" fill="#5b6878" text-anchor="start" opacity="1.0">I2S + 5V</text>
+  <path d="M 700 260 L 790 260 L 790 281 L 850 281" fill="none" stroke="#2563eb" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+  <text x="799" y="274.5" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="11.5" font-weight="500" fill="#5b6878" text-anchor="start" opacity="1.0">I2C</text>
+  <path d="M 480 660 L 340 660" fill="none" stroke="#2563eb" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+  <text x="410.0" y="651.0" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="11.5" font-weight="500" fill="#5b6878" text-anchor="middle" opacity="1.0">ch 0</text>
+  <path d="M 590 752 L 590 716" fill="none" stroke="#b91c1c" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+  <text x="599" y="738.0" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="11.5" font-weight="500" fill="#5b6878" text-anchor="start" opacity="1.0">V+</text>
+  <line x1="40" y1="478" x2="1220" y2="478" stroke="#5b6878" stroke-width="2.0" stroke-linecap="round" stroke-dasharray="10 7"/>
+  <rect x="420" y="452" width="420" height="52" rx="9" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
+  <text x="630" y="473" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#9a3412" text-anchor="middle" opacity="1.0">THE ROTATING PAN JOINT</text>
+  <text x="630" y="492" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#9a3412" text-anchor="middle" opacity="1.0">11 conductors cross here, all in silicone wire</text>
+  <path d="M 480 240 L 90 240 L 90 778 L 150 778" fill="none" stroke="#dc2626" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M 850 300 L 355 300 L 355 600 L 460 600 L 460 646 L 480 646" fill="none" stroke="#2563eb" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M 850 300 L 382 300 L 382 600 L 460 600 L 460 646 L 480 646" fill="none" stroke="#eab308" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M 850 300 L 409 300 L 409 600 L 460 600 L 460 646 L 480 646" fill="none" stroke="#f59e0b" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M 1050 356 L 1150 356 L 1150 730 L 720 730 L 720 700 L 700 700" fill="none" stroke="#2563eb" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M 1050 195 L 1190 195 L 1190 669 L 1050 669" fill="none" stroke="#16a34a" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+  <text x="90" y="524" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="600" fill="#5b6878" text-anchor="middle" opacity="1.0">5.1V + GND</text>
+  <text x="382" y="524" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="600" fill="#5b6878" text-anchor="middle" opacity="1.0">SDA / SCL / 3V3</text>
+  <text x="1088" y="524" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="600" fill="#5b6878" text-anchor="middle" opacity="1.0">tilt x3</text>
+  <text x="1088" y="542" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="600" fill="#5b6878" text-anchor="middle" opacity="1.0">speaker +/-</text>
+  <line x1="40" y1="872" x2="66" y2="872" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/>
+  <text x="76" y="876" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#5b6878" text-anchor="start" opacity="1.0">ribbon and USB</text>
+  <line x1="280" y1="872" x2="306" y2="872" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+  <text x="316" y="876" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#5b6878" text-anchor="start" opacity="1.0">I2S and PWM</text>
+  <line x1="520" y1="872" x2="546" y2="872" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+  <text x="556" y="876" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#5b6878" text-anchor="start" opacity="1.0">I2C</text>
+  <line x1="40" y1="894" x2="66" y2="894" stroke="#16a34a" stroke-width="4" stroke-linecap="round"/>
+  <text x="76" y="898" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#5b6878" text-anchor="start" opacity="1.0">speaker</text>
+  <line x1="280" y1="894" x2="306" y2="894" stroke="#dc2626" stroke-width="4" stroke-linecap="round"/>
+  <text x="316" y="898" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#5b6878" text-anchor="start" opacity="1.0">5.1V</text>
+  <line x1="520" y1="894" x2="546" y2="894" stroke="#b91c1c" stroke-width="4" stroke-linecap="round"/>
+  <text x="556" y="898" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#5b6878" text-anchor="start" opacity="1.0">6.0V</text>
+</svg>

@@ -62,15 +62,6 @@ module speaker_mount() {
         }
 }
 
-// MAX98357A I2S amplifier, on the floor beside the speaker.
-module amp_pads() {
-    for (y = [-1, 1])
-        translate([46, y * 7.62, base_floor_t - eps]) difference() {
-            cylinder(d = 6.5, h = 6);
-            translate([0, 0, 2]) heatset(d = m2_insert_d, h = 4 + eps);
-        }
-}
-
 module pca_pads() {
     // servo driver board, tucked against the wall opposite the connectors
     translate([0, -46, base_floor_t - eps]) rotate([0, 0, 0])
@@ -113,7 +104,6 @@ difference() {
         }
         deck_bosses();
         speaker_mount();
-        amp_pads();
         pca_pads();
         buck_pads();
     }

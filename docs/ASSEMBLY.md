@@ -11,6 +11,25 @@ five minutes.
 You will need: hex drivers, a small screwdriver, side cutters, a soldering iron
 with a heat-set insert tip, calipers, and grease.
 
+<!-- figure:exploded -->
+![Rocky, exploded](../hardware/img/assembly-exploded.png)
+
+**1.** base_shell  
+**2.** base electronics  
+**3.** pan servo  
+**4.** base_deck (fixed race)  
+**5.** ball cage + 24 balls  
+**6.** turntable (rotating race)  
+**7.** yoke  
+**8.** head_back + Pi + tilt servo  
+**9.** display + faceplate
+<!-- /figure -->
+
+Every figure below is generated from the same CAD as the printed parts, so
+what you see is what you will be holding. If you change a dimension, re-run the
+chain in [hardware/README.md](../hardware/README.md) and every picture in this
+document follows.
+
 ---
 
 ## Stage 1 — Prepare the printed parts
@@ -22,7 +41,6 @@ one forgotten insert after wiring means undoing work.
 |------|---------|-------|
 | `base_shell` | 6 × M3 | tops of the tall deck bosses |
 | `base_shell` | 4 × M2.5 | speaker mounting pads |
-| `base_shell` | 2 × M2 | amplifier pads |
 | `base_shell` | 4 × M2.5 | PCA9685 pads |
 | `base_shell` | 4 × M2.5 | regulator pads |
 | `base_deck` | 4 × M2.5 | **underside**, for the pan servo's ears |
@@ -31,6 +49,7 @@ one forgotten insert after wiring means undoing work.
 | `head_back` | 3 × M3 | faceplate posts |
 | `head_back` | 1 × M3 | right cheek, the tilt pivot |
 | `head_back` | 1 × M3 | trim-weight post, rear |
+| `head_back` | 2 × M2 | amplifier pads, rear wall |
 | `head_back` | 4 × M2 | camera posts inside the brow |
 | `head_back` | 2 × M2.5 | brow rim, for the window |
 | `head_back` | 2 × M2 | brow, for the mic bracket |
@@ -45,14 +64,26 @@ Check every one by hand-threading a screw before moving on.
 
 ## Stage 2 — The base electronics
 
+<!-- figure:stage2 -->
+![Stage 2 — the base electronics](../hardware/img/assembly-stage2.png)
+
+**1.** speaker, magnet up  
+**2.** PCA9685 servo driver  
+**3.** 5.1V regulator, feeds the Pi  
+**4.** 6.0V regulator, feeds the servos
+<!-- /figure -->
+
+
 Build this as a subassembly, on the bench, before anything goes into the shell.
 
 1. **Speaker.** Lay the TPU gasket on the base floor's raised ring, put the
    speaker on it facing **down** through the grille, and fix it with four M2.5 ×
    10 screws. Snug, not tight — over-tightening distorts the frame and the
    speaker buzzes.
-2. **Amplifier.** Two M2 × 6 into the pads beside the speaker. Solder the
-   speaker's leads to its `+` and `−` terminals.
+2. **Speaker leads.** Solder a pair of 22 AWG silicone leads to the speaker's
+   terminals, long enough to reach up through the pan joint. The amplifier is
+   in the head, not down here — see Stage 6 — so these two conductors are part
+   of the harness.
 3. **Regulators.** Buck A and Buck B onto their pads with M2.5 × 6.
    **Set both output voltages now**, before anything is connected downstream —
    5.1 V and 6.0 V. This is the last comfortable moment to do it.
@@ -66,6 +97,15 @@ Build this as a subassembly, on the bench, before anything goes into the shell.
 ---
 
 ## Stage 3 — Pan servo and race deck
+
+<!-- figure:stage3 -->
+![Stage 3 — the pan servo hangs from the deck](../hardware/img/assembly-stage3.png)
+
+**1.** servo ears bolt UP into the deck  
+**2.** body passes through the cutout  
+**3.** spline boss, horn goes here
+<!-- /figure -->
+
 
 The pan servo hangs from the deck rather than standing on the floor. It means
 the head's weight goes straight through the slew ring into the base wall, and it
@@ -88,6 +128,16 @@ proud — sand it rather than forcing the screws.
 ---
 
 ## Stage 4 — The slew ring
+
+<!-- figure:stage4 -->
+![Stage 4 — the slew ring](../hardware/img/assembly-stage4.png)
+
+**1.** grease the V groove, thinly  
+**2.** cage sets the ball spacing  
+**3.** 24 x 6mm steel balls  
+**4.** horn screws up into the hub
+<!-- /figure -->
+
 
 This is the joint Rocky turns on and the one place where a few minutes of care
 pays back every time it moves.
@@ -115,6 +165,15 @@ rocks, a ball is missing.
 
 ## Stage 5 — The yoke
 
+<!-- figure:stage5 -->
+![Stage 5 — the yoke](../hardware/img/assembly-stage5.png)
+
+**1.** 4 x M3 x 16 into the hub  
+**2.** 623ZZ bearing, press fit  
+**3.** tilt servo horn fits here
+<!-- /figure -->
+
+
 1. Sit the yoke on the turntable hub, crossbar down, arms up.
 2. Four M3 × 16 down through the crossbar's counterbores into the hub's
    inserts. Tighten evenly.
@@ -127,6 +186,18 @@ Leave the left arm alone for now; the tilt servo horn is fitted at Stage 8.
 ---
 
 ## Stage 6 — The head
+
+<!-- figure:stage6 -->
+![Stage 6 — inside the head](../hardware/img/assembly-stage6.png)
+
+**1.** Pi 5, portrait, offset right  
+**2.** tilt servo, shaft through the cheek  
+**3.** camera in the brow  
+**4.** microphone  
+**5.** trim weights balance the head  
+**6.** I2S amplifier
+<!-- /figure -->
+
 
 Everything except the faceplate goes in through the open front.
 
@@ -147,15 +218,31 @@ Everything except the faceplate goes in through the open front.
    inserts, its port lined up behind the rosette of holes in `pod_window`.
    Route the USB lead down to the Pi — use the right-angle adapter, a straight
    plug fouls the shell.
-6. **Brow window.** `pod_window` onto the brow's rim, two M2.5 × 8. The lens
+6. **Amplifier.** Two M2 × 6 onto the pads on the rear wall, above the Pi.
+   Wire I²S and 5 V to it from the header per [WIRING.md](WIRING.md), and its
+   speaker output down through the harness to the base.
+
+   It sits up here rather than beside the speaker so that two analogue
+   conductors cross the rotating joint instead of five digital ones. BCLK
+   toggles at about 3 MHz; a flexing harness is not where you want that.
+7. **Brow window.** `pod_window` onto the brow's rim, two M2.5 × 8. The lens
    should sit centred in its aperture without touching it.
-7. **Power and harness.** Bring the harness in through the 14 mm hole at the
+8. **Power and harness.** Bring the harness in through the 14 mm hole at the
    lower right of the shell. 5.1 V to the Pi's USB-C, I²C and tilt-servo
    conductors down to the base.
 
 ---
 
 ## Stage 7 — The faceplate
+
+<!-- figure:stage7 -->
+![Stage 7 — display and faceplate](../hardware/img/assembly-stage7.png)
+
+**1.** display drops in from behind  
+**2.** 4 x M2.5 into the faceplate  
+**3.** 3 x M3 through the rim
+<!-- /figure -->
+
 
 1. Lay the faceplate face-down on something soft.
 2. Drop the display module into the pocket from behind, glass forward against
@@ -219,6 +306,14 @@ heavy, it works against gravity continuously, gets hot, and buzzes.
 
 ## Stage 10 — Close up and calibrate
 
+<!-- figure:harness -->
+![The pan-joint harness](../hardware/img/assembly-harness.png)
+
+**1.** 11 conductors cross the joint  
+**2.** service loop, about 60mm slack  
+**3.** 16mm bore at 30mm radius
+<!-- /figure -->
+
 1. Dress the harness with the four `cable_clip` pieces. Check the service loop
    coils and uncoils across the full pan range without pulling or snagging.
 2. Felt pads under the five legs.
@@ -243,6 +338,12 @@ rocky run
 5. On the **Motion** tab, jog both axes to their limits and watch that nothing
    fouls. On the **Expression** tab, click through the faces. On **Voice**,
    play a test tone and a few chords.
+
+That is Rocky finished.
+
+<!-- figure:assembled -->
+![Assembled](../hardware/img/assembly-assembled.png)
+<!-- /figure -->
 
 ---
 
