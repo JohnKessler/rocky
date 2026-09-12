@@ -5,7 +5,6 @@ from __future__ import annotations
 import math
 
 import pytest
-
 from rocky.config import FaceConfig
 from rocky.face.expressions import EXPRESSION_NAMES, EXPRESSIONS, FaceParams, resolve
 from rocky.face.renderer import HeadlessRenderer, layout, make_renderer

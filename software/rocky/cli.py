@@ -152,21 +152,43 @@ async def _check(cfg: Config) -> int:
             rows.append((label, f"failed: {exc}", False))
             return None
 
-    servos = probe("servos", lambda: make_servo_backend(cfg.hardware.servos, cfg.motion.i2c_address, cfg.motion.pwm_frequency), ("PCA9685",))
-    camera = probe("camera", lambda: make_camera(cfg.hardware.camera, cfg.vision), ("Picamera2",))
+    servos = probe(
+        "servos",
+        lambda: make_servo_backend(
+            cfg.hardware.servos, cfg.motion.i2c_address, cfg.motion.pwm_frequency
+        ),
+        ("PCA9685",),
+    )
+    camera = probe(
+        "camera", lambda: make_camera(cfg.hardware.camera, cfg.vision), ("Picamera2",)
+    )
     if camera:
-        probe("detector", lambda: make_detector(cfg.vision, camera.kind), ("MediaPipe", "Haar"))
+        probe(
+            "detector",
+            lambda: make_detector(cfg.vision, camera.kind),
+            ("MediaPipe", "Haar"),
+        )
     probe("display", lambda: make_renderer(cfg.hardware.display, cfg.face), ("Pygame",))
-    probe("audio io", lambda: make_audio_io(cfg.hardware.audio, cfg.audio.sample_rate, 480, cfg.audio.input_device, cfg.audio.output_device), ("SoundDevice",))
+    probe(
+        "audio io",
+        lambda: make_audio_io(
+            cfg.hardware.audio, cfg.audio.sample_rate, 480,
+            cfg.audio.input_device, cfg.audio.output_device,
+        ),
+        ("SoundDevice",),
+    )
     probe("speech in", lambda: make_stt(cfg.audio.stt), ("FasterWhisper",))
     probe("speech out", lambda: make_tts(cfg.audio.tts), ("Piper", "Espeak"))
 
     try:
-        import anthropic  # noqa: F401
-
         import os
-        has_key = bool(os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_AUTH_TOKEN"))
-        rows.append(("brain", f"anthropic sdk, credentials {'found' if has_key else 'NOT found'}", has_key))
+
+        import anthropic  # noqa: F401
+        has_key = bool(
+            os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_AUTH_TOKEN")
+        )
+        found = "found" if has_key else "NOT found"
+        rows.append(("brain", f"anthropic sdk, credentials {found}", has_key))
     except Exception as exc:
         rows.append(("brain", f"failed: {exc}", False))
 
@@ -224,7 +246,9 @@ async def _calibrate(cfg: Config, axis: str) -> int:
     from rocky.motion.servo import make_servo_backend
 
     axis_cfg = getattr(cfg.motion, axis)
-    backend = make_servo_backend(cfg.hardware.servos, cfg.motion.i2c_address, cfg.motion.pwm_frequency)
+    backend = make_servo_backend(
+        cfg.hardware.servos, cfg.motion.i2c_address, cfg.motion.pwm_frequency
+    )
     print(f"\nCalibrating {axis} on channel {axis_cfg.channel}.")
     print("  a / d  nudge by 1 degree      A / D  nudge by 5")
     print("  0      command zero            s     save trim and quit")

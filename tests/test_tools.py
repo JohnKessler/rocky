@@ -7,11 +7,9 @@ bus - the same path the dashboard's buttons take.
 from __future__ import annotations
 
 import pytest
-
 from rocky.brain import tools
 from rocky.brain.memory import Memory
 from rocky.core import events as ev
-from rocky.core.bus import EventBus
 from rocky.vision.camera import SimCamera
 
 

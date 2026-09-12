@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from rocky.motion.gestures import GESTURE_NAMES, GESTURES, get
 
 

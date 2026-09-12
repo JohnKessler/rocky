@@ -8,7 +8,8 @@ from typing import Any
 
 from rocky.core import events as ev
 from rocky.core.service import Service
-from rocky.motion.gestures import GestureDef, get as get_gesture
+from rocky.motion.gestures import GestureDef
+from rocky.motion.gestures import get as get_gesture
 from rocky.motion.kinematics import (
     AxisState,
     MotionProfile,

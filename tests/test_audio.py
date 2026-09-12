@@ -6,7 +6,6 @@ import math
 import random
 
 import pytest
-
 from rocky.audio.chirps import MOTIF_NAMES, MOTIFS, motif_for_expression, render
 from rocky.audio.devices import SimAudioIO, pitch_shift, resample, rms
 from rocky.audio.vad import EnergyVAD, UtteranceGate

@@ -10,7 +10,6 @@ import asyncio
 from pathlib import Path
 
 import pytest
-
 from rocky.config import Config
 from rocky.core.bus import EventBus
 

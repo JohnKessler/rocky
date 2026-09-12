@@ -5,7 +5,6 @@ from __future__ import annotations
 import math
 
 import pytest
-
 from rocky.motion.kinematics import (
     MECHANICAL_LIMITS,
     AxisState,
@@ -55,11 +54,11 @@ class TestPulses:
             assert 500 <= us <= 2500
 
     def test_invert_mirrors(self):
-        kwargs = dict(pulse_min_us=500, pulse_max_us=2500, range_deg=180)
+        kwargs = {"pulse_min_us": 500, "pulse_max_us": 2500, "range_deg": 180}
         assert angle_to_pulse_us(30, invert=True, **kwargs) == angle_to_pulse_us(-30, **kwargs)
 
     def test_trim_shifts_the_centre(self):
-        kwargs = dict(pulse_min_us=500, pulse_max_us=2500, range_deg=180)
+        kwargs = {"pulse_min_us": 500, "pulse_max_us": 2500, "range_deg": 180}
         assert angle_to_pulse_us(0, trim_deg=10, **kwargs) == angle_to_pulse_us(10, **kwargs)
 
     def test_duty_cycle_is_in_range(self):

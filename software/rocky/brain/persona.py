@@ -14,10 +14,10 @@ what a dial did.
 
 from __future__ import annotations
 
+from rocky.audio.chirps import MOTIF_NAMES
 from rocky.config import Config, Traits
 from rocky.face.expressions import EXPRESSION_NAMES
 from rocky.motion.gestures import GESTURE_NAMES
-from rocky.audio.chirps import MOTIF_NAMES
 
 CORE = """\
 You are Rocky, a small alien engineer who lives on a desk.

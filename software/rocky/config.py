@@ -43,13 +43,33 @@ class Traits(_Base):
     a dial in the dashboard changes behaviour within a second or two.
     """
 
-    curiosity: float = Field(0.75, ge=0, le=1, description="How readily Rocky looks at new things and asks about them")
+    curiosity: float = Field(
+        0.75,
+        ge=0,
+        le=1,
+        description="How readily Rocky looks at new things and asks about them",
+    )
     chattiness: float = Field(0.45, ge=0, le=1, description="How often Rocky speaks unprompted")
     playfulness: float = Field(0.70, ge=0, le=1, description="Humour, teasing, and silly chirps")
     warmth: float = Field(0.80, ge=0, le=1, description="How openly Rocky expresses fondness")
-    formality: float = Field(0.15, ge=0, le=1, description="Sentence register; Rocky's speech is plain by design")
-    energy: float = Field(0.60, ge=0, le=1, description="Movement amplitude, blink rate, speech pace")
-    focus: float = Field(0.55, ge=0, le=1, description="How long Rocky stays on one subject before drifting")
+    formality: float = Field(
+        0.15,
+        ge=0,
+        le=1,
+        description="Sentence register; Rocky's speech is plain by design",
+    )
+    energy: float = Field(
+        0.60,
+        ge=0,
+        le=1,
+        description="Movement amplitude, blink rate, speech pace",
+    )
+    focus: float = Field(
+        0.55,
+        ge=0,
+        le=1,
+        description="How long Rocky stays on one subject before drifting",
+    )
 
 
 class Identity(_Base):
@@ -78,7 +98,11 @@ class BrainConfig(_Base):
     refusal_fallbacks: bool = True
 
     history_turns: int = Field(12, ge=2, le=60, description="Conversation turns kept in context")
-    idle_prompt_seconds: float = Field(0.0, ge=0, description="Speak unprompted after this long; 0 disables")
+    idle_prompt_seconds: float = Field(
+        0.0,
+        ge=0,
+        description="Speak unprompted after this long; 0 disables",
+    )
     scene_in_context: bool = Field(True, description="Give the model what the camera sees")
     max_tool_iterations: int = Field(6, ge=1, le=20)
 
@@ -114,19 +138,39 @@ class FaceConfig(_Base):
     # Round panels crop to a circle; set False for a square/rect display.
     circular_mask: bool = True
 
-    eye_spacing: float = Field(0.30, ge=0.10, le=0.60, description="Eye separation as a fraction of width")
+    eye_spacing: float = Field(
+        0.30,
+        ge=0.10,
+        le=0.60,
+        description="Eye separation as a fraction of width",
+    )
     eye_radius: float = Field(0.135, ge=0.03, le=0.30)
     eye_y: float = Field(0.46, ge=0.10, le=0.90, description="Eye centre height as a fraction")
-    pupil_track: float = Field(0.35, ge=0, le=1, description="How far the eyes follow what Rocky looks at")
+    pupil_track: float = Field(
+        0.35,
+        ge=0,
+        le=1,
+        description="How far the eyes follow what Rocky looks at",
+    )
 
     blink_min_s: float = Field(2.4, ge=0.3, le=30)
     blink_max_s: float = Field(7.0, ge=0.5, le=60)
     blink_duration_s: float = Field(0.13, ge=0.03, le=0.6)
     saccade_rate: float = Field(0.55, ge=0, le=5, description="Idle eye darts per second")
 
-    expression_blend_s: float = Field(0.28, ge=0.01, le=3.0, description="Time to cross-fade expressions")
+    expression_blend_s: float = Field(
+        0.28,
+        ge=0.01,
+        le=3.0,
+        description="Time to cross-fade expressions",
+    )
     resting_expression: str = "content"
-    idle_decay_s: float = Field(14.0, ge=1, le=300, description="Time before drifting back to resting")
+    idle_decay_s: float = Field(
+        14.0,
+        ge=1,
+        le=300,
+        description="Time before drifting back to resting",
+    )
 
     palette: Palette = Field(default_factory=Palette)
     preview_fps: int = Field(12, ge=1, le=30, description="Face mirror rate for the dashboard")
@@ -157,7 +201,12 @@ class AxisConfig(_Base):
 
     pulse_min_us: int = Field(500, ge=400, le=1500)
     pulse_max_us: int = Field(2500, ge=1500, le=2800)
-    range_deg: float = Field(180.0, gt=30, le=360, description="Servo travel between the two pulse limits")
+    range_deg: float = Field(
+        180.0,
+        gt=30,
+        le=360,
+        description="Servo travel between the two pulse limits",
+    )
 
     max_speed_dps: float = Field(150.0, gt=1, le=900, description="Degrees per second ceiling")
     max_accel_dps2: float = Field(600.0, gt=1, le=6000)
@@ -177,7 +226,12 @@ class TrackingConfig(_Base):
     # adding much derivative gain makes Rocky twitchy and unsettling.
     gain: float = Field(0.55, ge=0, le=3)
     damping: float = Field(0.12, ge=0, le=2)
-    deadband: float = Field(0.045, ge=0, le=0.4, description="Ignore offsets smaller than this, normalised")
+    deadband: float = Field(
+        0.045,
+        ge=0,
+        le=0.4,
+        description="Ignore offsets smaller than this, normalised",
+    )
     lost_target_hold_s: float = Field(2.5, ge=0, le=30)
     # Rocky looks at the face's eyes, a little above the box centre.
     vertical_bias: float = Field(-0.08, ge=-0.5, le=0.5)
@@ -188,7 +242,12 @@ class IdleMotion(_Base):
     scan_interval_s: float = Field(22.0, ge=2, le=600)
     scan_amplitude_deg: float = Field(28.0, ge=0, le=120)
     micro_move_interval_s: float = Field(5.0, ge=0.5, le=120)
-    micro_move_deg: float = Field(2.2, ge=0, le=20, description="Small settling drifts, so Rocky never looks frozen")
+    micro_move_deg: float = Field(
+        2.2,
+        ge=0,
+        le=20,
+        description="Small settling drifts, so Rocky never looks frozen",
+    )
 
 
 class MotionConfig(_Base):
@@ -196,7 +255,9 @@ class MotionConfig(_Base):
     i2c_address: int = Field(0x40, ge=0x40, le=0x7F)
     pwm_frequency: int = Field(50, ge=40, le=400)
 
-    pan: AxisConfig = Field(default_factory=lambda: AxisConfig(channel=0, min_deg=-100, max_deg=100))
+    pan: AxisConfig = Field(
+        default_factory=lambda: AxisConfig(channel=0, min_deg=-100, max_deg=100)
+    )
     tilt: AxisConfig = Field(
         default_factory=lambda: AxisConfig(
             channel=1, min_deg=-26, max_deg=26, max_speed_dps=120, max_accel_dps2=500
@@ -209,7 +270,12 @@ class MotionConfig(_Base):
     # Cutting drive when the head has been still briefly is what stops a
     # servo humming on your desk all evening. It is the single biggest
     # difference between a robot you keep out and one you put away.
-    idle_torque_off_s: float = Field(1.2, ge=0, le=60, description="Release servos after this long at rest; 0 keeps them powered")
+    idle_torque_off_s: float = Field(
+        1.2,
+        ge=0,
+        le=60,
+        description="Release servos after this long at rest; 0 keeps them powered",
+    )
     update_hz: int = Field(60, ge=10, le=200)
 
 
@@ -229,15 +295,28 @@ class VisionConfig(_Base):
     # Field of view of the fitted lens. The tracker converts a face's offset
     # from image centre into degrees with these, so a wrong value makes Rocky
     # consistently under- or over-shoot when it turns to look at you.
-    h_fov_deg: float = Field(102.0, ge=20, le=180, description="Horizontal FOV; 102 for Camera Module 3 Wide")
+    h_fov_deg: float = Field(
+        102.0,
+        ge=20,
+        le=180,
+        description="Horizontal FOV; 102 for Camera Module 3 Wide",
+    )
     v_fov_deg: float = Field(67.0, ge=15, le=170, description="Vertical FOV")
 
     detector: Literal["mediapipe", "haar", "none"] = "mediapipe"
     detect_hz: float = Field(8.0, ge=0.5, le=30)
     min_confidence: float = Field(0.55, ge=0.05, le=0.99)
 
-    scene_interval_s: float = Field(45.0, ge=5, le=3600, description="How often to ask the model what it sees")
-    scene_on_change_only: bool = Field(True, description="Only describe the scene when the frame changes materially")
+    scene_interval_s: float = Field(
+        45.0,
+        ge=5,
+        le=3600,
+        description="How often to ask the model what it sees",
+    )
+    scene_on_change_only: bool = Field(
+        True,
+        description="Only describe the scene when the frame changes materially",
+    )
     change_threshold: float = Field(0.14, ge=0.01, le=1.0)
 
     stream_quality: int = Field(70, ge=20, le=95, description="Dashboard MJPEG quality")
@@ -266,7 +345,12 @@ class SttConfig(_Base):
     language: str = "en"
     max_utterance_s: float = Field(15.0, ge=2, le=120)
     silence_s: float = Field(0.75, ge=0.2, le=5, description="Silence that ends an utterance")
-    vad_threshold: float = Field(0.012, ge=0.0001, le=0.5, description="RMS gate for the fallback VAD")
+    vad_threshold: float = Field(
+        0.012,
+        ge=0.0001,
+        le=0.5,
+        description="RMS gate for the fallback VAD",
+    )
 
 
 class TtsConfig(_Base):

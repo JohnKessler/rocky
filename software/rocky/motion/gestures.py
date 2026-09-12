@@ -52,7 +52,12 @@ class GestureDef:
         return self.frames[-1].pan, self.frames[-1].tilt
 
 
-def _g(name: str, description: str, frames: list[tuple[float, float, float]], easing: str = "smooth") -> GestureDef:
+def _g(
+    name: str,
+    description: str,
+    frames: list[tuple[float, float, float]],
+    easing: str = "smooth",
+) -> GestureDef:
     return GestureDef(
         name=name,
         description=description,

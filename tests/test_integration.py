@@ -10,7 +10,6 @@ from __future__ import annotations
 import asyncio
 
 import pytest
-
 from rocky.app import RockyApp
 from rocky.core import events as ev
 

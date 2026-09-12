@@ -9,9 +9,9 @@ from __future__ import annotations
 import asyncio
 import base64
 import time
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
-from rocky.audio.chirps import motif_for_expression
 from rocky.brain.agent import Agent
 from rocky.brain.memory import Memory
 from rocky.brain.persona import greeting_line
@@ -177,7 +177,10 @@ class BrainService(Service):
         if not self._greeted:
             self._greeted = True
             if traits.chattiness > 0.3:
-                self.bus.publish(ev.UTTERANCE, ev.Utterance(greeting_line(self.config), "delighted"))
+                self.bus.publish(
+                    ev.UTTERANCE,
+                    ev.Utterance(greeting_line(self.config), "delighted"),
+                )
 
     async def describe_scene(self) -> str:
         """Ask the model what the camera can see.

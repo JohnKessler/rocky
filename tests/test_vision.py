@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from rocky.config import Config, VisionConfig
 from rocky.vision.camera import SimCamera, make_camera
 from rocky.vision.detector import SimDetector, make_detector

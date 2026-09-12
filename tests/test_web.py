@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import pytest
 from fastapi.testclient import TestClient
-
 from rocky.app import RockyApp
 from rocky.web.app import create_app
 
