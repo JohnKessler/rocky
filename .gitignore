@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Rocky runtime state
+var/
+*.log
+rocky.db
+config.local.toml
+.env
+
+# CAD scratch
+hardware/stl/*.tmp
+*.deps
