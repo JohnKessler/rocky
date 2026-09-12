@@ -18,3 +18,7 @@ config.local.toml
 # CAD scratch
 hardware/stl/*.tmp
 *.deps
+
+# Download bundle, produced by `git archive` from whatever is committed.
+# Committing it would put a stale copy of the repository inside itself.
+rocky.zip
