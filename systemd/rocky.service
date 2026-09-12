@@ -1,0 +1,39 @@
+[Unit]
+Description=Rocky desk companion
+Documentation=https://github.com/JohnKessler/rocky
+After=network-online.target sound.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=rocky
+Group=rocky
+# Needs the video, audio, i2c and gpio groups to reach the hardware.
+SupplementaryGroups=video audio i2c gpio render input
+WorkingDirectory=/opt/rocky
+Environment=PYTHONUNBUFFERED=1
+Environment=ROCKY_CONFIG=/opt/rocky/config.toml
+# The face needs a display. On a Pi booting to console, SDL draws straight to
+# the framebuffer, which is what the kmsdrm driver below selects.
+Environment=SDL_VIDEODRIVER=kmsdrm
+EnvironmentFile=-/etc/rocky/rocky.env
+ExecStart=/opt/rocky/.venv/bin/rocky run
+Restart=always
+RestartSec=5
+# Rocky is a toy on a desk, not a service that should thrash on a real fault.
+StartLimitBurst=5
+StartLimitIntervalSec=120
+
+# A companion robot should not be able to rummage around the filesystem.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/rocky/var /opt/rocky/config.toml
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+RestrictRealtime=false
+
+[Install]
+WantedBy=multi-user.target

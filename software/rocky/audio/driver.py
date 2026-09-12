@@ -52,6 +52,7 @@ class AudioService(Service):
         self.io = make_audio_io(
             self.config.hardware.audio, cfg.sample_rate, frame_size,
             cfg.input_device, cfg.output_device,
+            realtime=self.config.hardware.sim_realtime_audio,
         )
         self.wake = make_wake(cfg.wake)
         self._vad = make_vad(cfg.stt.vad_threshold)
@@ -179,6 +180,11 @@ class AudioService(Service):
         cfg = self.config.audio
         async with self._speak_lock:
             self._speaking = True
+            # Shut the mic explicitly rather than relying on the capture loop
+            # skipping frames, so the reported state is honest: the dashboard
+            # should never show "listening" while Rocky is talking.
+            if self._mic_open:
+                self._close_mic("speaking")
             self.bus.publish(ev.SPEAKING, ev.Speaking(True, text))
             total = 0.0
             try:

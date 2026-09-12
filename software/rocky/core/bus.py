@@ -22,7 +22,7 @@ import contextlib
 import fnmatch
 import logging
 from collections import defaultdict
-from collections.abc import AsyncIterator, Awaitable, Callable
+from collections.abc import Awaitable, Callable
 from typing import Any
 
 log = logging.getLogger(__name__)
@@ -121,17 +121,16 @@ class EventBus:
         if not handlers:
             self._handlers.pop(pattern, None)
 
-    async def stream(self, pattern: str, *, maxsize: int = 64) -> AsyncIterator[tuple[str, Any]]:
-        """Yield matching events. The queue is bounded and drops oldest."""
-        queue: asyncio.Queue = asyncio.Queue(maxsize=maxsize)
-        entry = (pattern, queue)
-        self._queues.append(entry)
-        try:
-            while True:
-                yield await queue.get()
-        finally:
-            with contextlib.suppress(ValueError):
-                self._queues.remove(entry)
+    def stream(self, pattern: str, *, maxsize: int = 64) -> EventStream:
+        """An async iterator over matching events.
+
+        Returns an object rather than being an async generator, because a
+        generator does not run its body - and so does not register its queue -
+        until the first ``__anext__``. Anything published between creating the
+        stream and first awaiting it would be silently lost, which is exactly
+        the window in which a websocket client sends its opening snapshot.
+        """
+        return EventStream(self, pattern, maxsize)
 
     # -- introspection ------------------------------------------------------
 
@@ -161,6 +160,39 @@ class EventBus:
         await asyncio.gather(*list(self._tasks), return_exceptions=True)
         self._handlers.clear()
         self._queues.clear()
+
+
+class EventStream:
+    """A bounded, oldest-dropping view of the bus. Registers on construction."""
+
+    def __init__(self, bus: EventBus, pattern: str, maxsize: int) -> None:
+        self._bus = bus
+        self._queue: asyncio.Queue = asyncio.Queue(maxsize=maxsize)
+        self._entry = (pattern, self._queue)
+        bus._queues.append(self._entry)
+        self._closed = False
+
+    def __aiter__(self) -> EventStream:
+        return self
+
+    async def __anext__(self) -> tuple[str, Any]:
+        if self._closed:
+            raise StopAsyncIteration
+        return await self._queue.get()
+
+    async def aclose(self) -> None:
+        self.close()
+
+    def close(self) -> None:
+        self._closed = True
+        with contextlib.suppress(ValueError):
+            self._bus._queues.remove(self._entry)
+
+    def __enter__(self) -> EventStream:
+        return self
+
+    def __exit__(self, *exc: object) -> None:
+        self.close()
 
 
 async def _guard(handler: Handler, topic: str, payload: Any) -> None:

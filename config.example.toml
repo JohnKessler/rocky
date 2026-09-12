@@ -1,0 +1,202 @@
+# Rocky - example configuration
+#
+# Copy this to config.toml and edit. Every value here can also be changed live
+# from the dashboard, and the dashboard's Save button writes back to
+# config.toml. Anything you delete falls back to the default in
+# software/rocky/config.py, so it is fine to keep your own file short and
+# record only what you changed.
+#
+# Environment overrides use a double underscore between levels:
+#   ROCKY_MOTION__PAN__MAX_SPEED_DPS=90
+#   ROCKY_LOG_LEVEL=DEBUG
+#
+# The settings most worth attention on a fresh build:
+#
+#   identity.owner_name          your name; Rocky uses it out loud
+#   motion.pan.centre_trim_deg   run `rocky calibrate pan` instead of guessing
+#   motion.tilt.centre_trim_deg  likewise for tilt
+#   motion.*.invert              flip if an axis moves the wrong way
+#   audio.input_device           a fragment of the microphone's name
+#   audio.output_device          a fragment of the speaker's name
+#   vision.h_fov_deg             must match the lens, or Rocky mis-aims
+#   face.width / face.height     must match the panel's real resolution
+#
+log_level = "INFO"
+state_dir = "var"
+
+[identity]
+name = "Rocky"
+wake_word = "hey rocky"
+owner_name = ""
+
+[identity.traits]
+curiosity = 0.75
+chattiness = 0.45
+playfulness = 0.7
+warmth = 0.8
+formality = 0.15
+energy = 0.6
+focus = 0.55
+
+[brain]
+model = "claude-opus-5"
+max_tokens = 1024
+effort = "low"
+thinking = true
+refusal_fallbacks = true
+history_turns = 12
+idle_prompt_seconds = 0.0
+scene_in_context = true
+max_tool_iterations = 6
+reply_char_limit = 320
+
+[memory]
+enabled = true
+path = "var/rocky.db"
+max_facts = 500
+recall_limit = 8
+
+[face]
+width = 720
+height = 720
+fps = 45
+fullscreen = true
+circular_mask = true
+eye_spacing = 0.3
+eye_radius = 0.135
+eye_y = 0.46
+pupil_track = 0.35
+blink_min_s = 2.4
+blink_max_s = 7.0
+blink_duration_s = 0.13
+saccade_rate = 0.55
+expression_blend_s = 0.28
+resting_expression = "content"
+idle_decay_s = 14.0
+preview_fps = 12
+
+[face.palette]
+background = "#05070d"
+iris = "#6fd3e7"
+iris_inner = "#bff0fa"
+glow = "#1c6b7d"
+mouth = "#6fd3e7"
+blush = "#e0715f"
+
+[motion]
+enabled = true
+i2c_address = 64
+pwm_frequency = 50
+idle_torque_off_s = 1.2
+update_hz = 60
+
+[motion.pan]
+channel = 0
+min_deg = -100.0
+max_deg = 100.0
+centre_trim_deg = 0.0
+invert = false
+pulse_min_us = 500
+pulse_max_us = 2500
+range_deg = 180.0
+max_speed_dps = 150.0
+max_accel_dps2 = 600.0
+
+[motion.tilt]
+channel = 1
+min_deg = -26.0
+max_deg = 26.0
+centre_trim_deg = 0.0
+invert = false
+pulse_min_us = 500
+pulse_max_us = 2500
+range_deg = 180.0
+max_speed_dps = 120.0
+max_accel_dps2 = 500.0
+
+[motion.tracking]
+enabled = true
+gain = 0.55
+damping = 0.12
+deadband = 0.045
+lost_target_hold_s = 2.5
+vertical_bias = -0.08
+
+[motion.idle]
+enabled = true
+scan_interval_s = 22.0
+scan_amplitude_deg = 28.0
+micro_move_interval_s = 5.0
+micro_move_deg = 2.2
+
+[vision]
+enabled = true
+width = 1280
+height = 720
+fps = 15
+rotation = 0
+hflip = false
+h_fov_deg = 102.0
+v_fov_deg = 67.0
+detector = "mediapipe"
+detect_hz = 8.0
+min_confidence = 0.55
+scene_interval_s = 45.0
+scene_on_change_only = true
+change_threshold = 0.14
+stream_quality = 70
+stream_fps = 10
+
+[audio]
+enabled = true
+input_device = ""
+output_device = ""
+sample_rate = 16000
+frame_ms = 30
+input_gain = 1.0
+
+[audio.wake]
+enabled = true
+backend = "openwakeword"
+model = "hey_rocky"
+threshold = 0.55
+cooldown_s = 1.5
+open_mic_after_reply_s = 8.0
+
+[audio.stt]
+backend = "faster-whisper"
+model = "base.en"
+device = "auto"
+language = "en"
+max_utterance_s = 15.0
+silence_s = 0.75
+vad_threshold = 0.012
+
+[audio.tts]
+backend = "piper"
+voice = "en_GB-alan-medium"
+pitch_shift = -1.5
+rate = 0.97
+volume = 0.85
+
+[audio.chirps]
+enabled = true
+volume = 0.45
+base_hz = 196.0
+harmonics = 3
+duration_s = 0.34
+before_speech = true
+after_speech = false
+
+[web]
+enabled = true
+host = "0.0.0.0"
+port = 8080
+telemetry_hz = 4.0
+
+[hardware]
+servos = "auto"
+camera = "auto"
+display = "auto"
+audio = "auto"
+sim_realtime_audio = true

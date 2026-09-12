@@ -51,8 +51,16 @@ class FaceParams:
     shake: float = 0.0            # 0..1 jitter amplitude, for alarm
 
     def blend(self, other: FaceParams, t: float) -> FaceParams:
-        """Linear interpolation toward ``other``."""
-        t = 0.0 if t < 0 else 1.0 if t > 1 else t
+        """Linear interpolation toward ``other``.
+
+        The endpoints return their operand exactly. ``a + (b - a) * 1.0`` is
+        not bit-identical to ``b`` in floating point, and the face driver uses
+        equality to decide a cross-fade has finished.
+        """
+        if t <= 0.0:
+            return self
+        if t >= 1.0:
+            return other
         values = {
             f.name: getattr(self, f.name) + (getattr(other, f.name) - getattr(self, f.name)) * t
             for f in fields(self)

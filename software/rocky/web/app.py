@@ -27,6 +27,18 @@ from rocky.motion.gestures import GESTURES
 
 log = logging.getLogger("rocky.web")
 
+
+def _managed_lifespan(rocky: Any):
+    @contextlib.asynccontextmanager
+    async def lifespan(_app: FastAPI):
+        await rocky.start()
+        try:
+            yield
+        finally:
+            await rocky.stop()
+
+    return lifespan
+
 STATIC_DIR = Path(__file__).parent / "static"
 
 
@@ -66,9 +78,17 @@ class MotifBody(BaseModel):
     motif: str
 
 
-def create_app(rocky: Any) -> FastAPI:
-    """Build the API around a running :class:`rocky.app.RockyApp`."""
-    app = FastAPI(title="Rocky", version="1.0.0", docs_url="/api/docs")
+def create_app(rocky: Any, *, manage_lifecycle: bool = False) -> FastAPI:
+    """Build the API around a :class:`rocky.app.RockyApp`.
+
+    ``manage_lifecycle`` makes the web app start and stop the robot itself, on
+    whatever event loop is serving HTTP. The CLI does not use it - there the
+    robot is already running and the dashboard is optional - but it lets the
+    app be embedded, and it lets the tests drive everything through one loop
+    instead of trying to share services across two.
+    """
+    lifespan = _managed_lifespan(rocky) if manage_lifecycle else None
+    app = FastAPI(title="Rocky", version="1.0.0", docs_url="/api/docs", lifespan=lifespan)
 
     # ---------------------------------------------------------------- pages
 

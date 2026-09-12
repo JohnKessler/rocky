@@ -334,6 +334,12 @@ class HardwareConfig(_Base):
     display: Literal["auto", "pygame", "sim"] = "auto"
     audio: Literal["auto", "sounddevice", "sim"] = "auto"
 
+    # Simulated playback occupies real time, so everything that keys off how
+    # long Rocky speaks - the mouth animation, gesture timing, and the gate
+    # that stops Rocky hearing itself - behaves as it will on the robot. Turn
+    # it off to make a test suite or a long soak run at full speed.
+    sim_realtime_audio: bool = True
+
 
 class Config(_Base):
     identity: Identity = Field(default_factory=Identity)

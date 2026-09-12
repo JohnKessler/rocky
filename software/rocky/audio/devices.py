@@ -38,10 +38,17 @@ class SimAudioIO(AudioIO):
     Input is quiet room tone rather than digital silence, so the VAD and the
     level meters behave the way they will on real hardware instead of sitting
     at exactly zero.
+
+    Playback takes real time by default. Returning instantly would be faster
+    but would make the simulation lie: everything downstream keys off how long
+    Rocky is speaking - the mouth animation, the gesture timing, and the gate
+    that stops Rocky transcribing its own voice - and none of it would ever be
+    exercised.
     """
 
-    def __init__(self, sample_rate: int, frame_size: int) -> None:
+    def __init__(self, sample_rate: int, frame_size: int, *, realtime: bool = True) -> None:
         super().__init__(sample_rate, frame_size)
+        self.realtime = realtime
         self.played: list[list[float]] = []
         self.play_seconds = 0.0
         self._phase = 0
@@ -69,6 +76,8 @@ class SimAudioIO(AudioIO):
         self.played.append(list(samples))
         duration = len(samples) / self.sample_rate
         self.play_seconds += duration
+        if self.realtime and duration > 0:
+            time.sleep(duration)
         return duration
 
 
@@ -139,16 +148,17 @@ def _find_device(sd, fragment: str, *, want_input: bool):
 def make_audio_io(
     preference: str, sample_rate: int, frame_size: int,
     input_device: str = "", output_device: str = "",
+    *, realtime: bool = True,
 ) -> AudioIO:
     if preference == "sim":
-        return SimAudioIO(sample_rate, frame_size)
+        return SimAudioIO(sample_rate, frame_size, realtime=realtime)
     try:
         return SoundDeviceIO(sample_rate, frame_size, input_device, output_device)
     except Exception as exc:
         if preference == "sounddevice":
             raise
         log.info("No audio device (%s); running audio in simulation", exc)
-        return SimAudioIO(sample_rate, frame_size)
+        return SimAudioIO(sample_rate, frame_size, realtime=realtime)
 
 
 def rms(frame: list[float]) -> float:

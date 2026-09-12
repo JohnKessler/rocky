@@ -99,9 +99,14 @@ class MotionProfile:
 
         error = state.target - state.position
 
-        # Fastest speed we could be doing and still stop on target.
-        stopping_speed = math.sqrt(2.0 * self.max_accel * abs(error))
-        desired = math.copysign(min(self.max_speed, stopping_speed), error)
+        # Fastest speed we can be doing now and still stop exactly on target.
+        # This is the DISCRETE-time solution, not v = sqrt(2*a*d): the step
+        # advances position at the start-of-step velocity, so the continuous
+        # form permits a speed that overshoots by up to one step. Solving
+        # v^2 + 2*a*dt*v - 2*a*d <= 0 accounts for that step.
+        a_dt = self.max_accel * dt
+        stopping_speed = -a_dt + math.sqrt(a_dt * a_dt + 2.0 * self.max_accel * abs(error))
+        desired = math.copysign(min(self.max_speed, max(0.0, stopping_speed)), error)
 
         # Respect the acceleration ceiling on the way to that speed.
         dv_limit = self.max_accel * dt
@@ -110,9 +115,12 @@ class MotionProfile:
 
         position = state.position + velocity * dt
 
-        # Snap when we are inside one step of the target, so the axis settles
-        # cleanly instead of dithering by fractions of a degree forever.
-        if abs(state.target - position) < max(0.02, abs(velocity) * dt * 0.5):
+        # Settle onto the target once we are already essentially stopped.
+        # The braking curve drives speed to zero as the error does, so the
+        # velocity discarded here is negligible. Snapping on remaining
+        # distance alone would discard a large velocity in one tick and
+        # break the very limit this class exists to enforce.
+        if abs(state.target - position) < 0.02 and abs(velocity) < 0.5:
             position, velocity = state.target, 0.0
 
         state.position = position
