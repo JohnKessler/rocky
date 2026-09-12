@@ -1,0 +1,4 @@
+# Binary STL. Without this git may guess, and a line-ending conversion would
+# silently corrupt a mesh.
+*.stl binary
+*.png binary

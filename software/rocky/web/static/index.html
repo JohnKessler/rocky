@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rocky</title>
+<link rel="stylesheet" href="/static/css/dashboard.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='15' fill='%2305070d'/><circle cx='11' cy='14' r='4' fill='%236fd3e7'/><circle cx='21' cy='14' r='4' fill='%236fd3e7'/></svg>">
+</head>
+<body>
+
+<header class="bar">
+  <div class="brand">
+    <span class="dot" id="link-dot" title="websocket"></span>
+    <strong id="robot-name">Rocky</strong>
+    <span class="muted" id="owner"></span>
+  </div>
+  <div class="pills">
+    <span class="pill" id="pill-brain">idle</span>
+    <span class="pill" id="pill-ears">mic closed</span>
+    <span class="pill" id="pill-mode">track</span>
+    <span class="pill" id="pill-temp">--</span>
+    <span class="pill" id="pill-uptime">--</span>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button data-tab="live" class="on">Live</button>
+  <button data-tab="motion">Motion</button>
+  <button data-tab="face">Expression</button>
+  <button data-tab="voice">Voice</button>
+  <button data-tab="personality">Personality</button>
+  <button data-tab="memory">Memory</button>
+  <button data-tab="settings">Settings</button>
+  <button data-tab="logs">Diagnostics</button>
+</nav>
+
+<main>
+
+<!-- ------------------------------------------------------------------ -->
+<section class="tab on" id="tab-live">
+  <div class="grid live-grid">
+    <div class="card">
+      <h2>Face <span class="chip" id="face-expression">content</span></h2>
+      <svg id="face" class="face"></svg>
+      <div class="readout" id="face-params"></div>
+    </div>
+
+    <div class="card">
+      <h2>Camera <span class="chip" id="cam-detector">--</span></h2>
+      <div class="camwrap">
+        <img id="camera" alt="camera view">
+        <svg id="cam-overlay" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="readout" id="scene">no scene description yet</div>
+    </div>
+
+    <div class="card span2">
+      <h2>Conversation</h2>
+      <div id="transcript" class="transcript"></div>
+      <form id="ask-form" class="row">
+        <input id="ask-input" placeholder="Say something to Rocky…" autocomplete="off">
+        <button type="submit">Ask</button>
+        <button type="button" id="say-btn" title="Speak this verbatim, no model">Say</button>
+      </form>
+      <div class="hint">Ask runs the whole conversation path — wake word, brain, tools, voice. Say speaks the text verbatim.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------------ -->
+<section class="tab" id="tab-motion">
+  <div class="grid">
+    <div class="card">
+      <h2>Pose</h2>
+      <div class="posegrid">
+        <div><label>Pan</label><output id="pose-pan">0.0°</output></div>
+        <div><label>Tilt</label><output id="pose-tilt">0.0°</output></div>
+        <div><label>Torque</label><output id="pose-torque">off</output></div>
+        <div><label>Tracking</label><output id="pose-track">no</output></div>
+      </div>
+      <svg id="pose-map" class="posemap" viewBox="-110 -40 220 80"></svg>
+      <div class="hint">The box is the mechanical envelope. The cross is where the head is; the ring is where it is heading.</div>
+    </div>
+
+    <div class="card">
+      <h2>Jog</h2>
+      <label class="slider">Pan <output id="jog-pan-val">0</output>°
+        <input type="range" id="jog-pan" min="-100" max="100" step="1" value="0">
+      </label>
+      <label class="slider">Tilt <output id="jog-tilt-val">0</output>°
+        <input type="range" id="jog-tilt" min="-26" max="26" step="1" value="0">
+      </label>
+      <div class="row wrap">
+        <button data-mode="track">Track faces</button>
+        <button data-mode="idle">Idle</button>
+        <button data-mode="manual">Manual</button>
+        <button data-mode="off" class="danger">Motors off</button>
+        <button id="centre-btn">Centre</button>
+      </div>
+      <div class="hint">Jogging switches to manual. Motors off releases both servos immediately.</div>
+    </div>
+
+    <div class="card span2">
+      <h2>Gestures</h2>
+      <div id="gesture-palette" class="palette"></div>
+    </div>
+
+    <div class="card span2">
+      <h2>Tracking &amp; limits</h2>
+      <div id="motion-settings" class="settings"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------------ -->
+<section class="tab" id="tab-face">
+  <div class="grid">
+    <div class="card">
+      <h2>Preview</h2>
+      <svg id="face2" class="face"></svg>
+    </div>
+    <div class="card">
+      <h2>Expressions</h2>
+      <label class="slider">Intensity <output id="expr-intensity-val">1.00</output>
+        <input type="range" id="expr-intensity" min="0.1" max="1" step="0.05" value="1">
+      </label>
+      <label class="slider">Hold <output id="expr-hold-val">0</output>s
+        <input type="range" id="expr-hold" min="0" max="30" step="1" value="0">
+      </label>
+      <div id="expression-palette" class="palette"></div>
+    </div>
+    <div class="card span2">
+      <h2>Face tuning</h2>
+      <div id="face-settings" class="settings"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------------ -->
+<section class="tab" id="tab-voice">
+  <div class="grid">
+    <div class="card">
+      <h2>Input level</h2>
+      <div class="meter"><div id="level-bar"></div></div>
+      <div class="posegrid">
+        <div><label>Wake score</label><output id="wake-score">0.00</output></div>
+        <div><label>Microphone</label><output id="mic-state">closed</output></div>
+        <div><label>Heard</label><output id="last-heard">—</output></div>
+        <div><label>Engine</label><output id="audio-engines">—</output></div>
+      </div>
+      <div class="row"><button id="tone-btn">Play test tone</button></div>
+    </div>
+    <div class="card">
+      <h2>Chords</h2>
+      <div class="hint">Rocky's first language. Each chord means something on its own.</div>
+      <div id="motif-palette" class="palette"></div>
+    </div>
+    <div class="card span2">
+      <h2>Voice &amp; chords</h2>
+      <div id="audio-settings" class="settings"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------------ -->
+<section class="tab" id="tab-personality">
+  <div class="grid">
+    <div class="card span2">
+      <h2>Traits</h2>
+      <div class="hint">
+        These are not cosmetic. Each dial is quoted into Rocky's prompt and read
+        by the face and motion services — turning one changes behaviour within a
+        second or two, and Rocky can turn them itself if you ask it to.
+      </div>
+      <div id="trait-settings" class="settings"></div>
+    </div>
+    <div class="card span2">
+      <h2>Brain</h2>
+      <div id="brain-settings" class="settings"></div>
+      <div class="readout" id="usage">—</div>
+    </div>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------------ -->
+<section class="tab" id="tab-memory">
+  <div class="grid">
+    <div class="card span2">
+      <h2>What Rocky remembers <span class="chip" id="memory-count">0</span></h2>
+      <form id="memory-form" class="row">
+        <input id="memory-input" placeholder="Add something for Rocky to remember…" autocomplete="off">
+        <button type="submit">Remember</button>
+      </form>
+      <div id="memory-list" class="facts"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------------ -->
+<section class="tab" id="tab-settings">
+  <div class="card">
+    <h2>All settings</h2>
+    <div class="row">
+      <input id="settings-filter" placeholder="Filter…" autocomplete="off">
+      <button id="save-config">Save to config.toml</button>
+      <span class="muted" id="save-status"></span>
+    </div>
+    <div class="hint">Changes apply immediately and are lost on restart until you save.</div>
+    <div id="all-settings" class="settings"></div>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------------ -->
+<section class="tab" id="tab-logs">
+  <div class="grid">
+    <div class="card">
+      <h2>Services</h2>
+      <div id="service-status" class="readout"></div>
+    </div>
+    <div class="card">
+      <h2>Recent actions</h2>
+      <div id="tool-log" class="transcript small"></div>
+    </div>
+    <div class="card span2">
+      <h2>Log</h2>
+      <div id="log" class="transcript small mono"></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script type="module" src="/static/js/dashboard.js"></script>
+</body>
+</html>
