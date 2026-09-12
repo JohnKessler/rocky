@@ -93,12 +93,16 @@ class Picamera2Backend(CameraBackend):
 class SimCamera(CameraBackend):
     """A synthetic room with someone moving about in it.
 
-    This is not a placeholder image. It renders a subject that drifts across
-    the frame on a slow Lissajous path and changes apparent size, which means
-    detection, tracking and the head-turning behaviour can all be exercised -
-    and regression-tested - without a camera. The subject's true position is
-    handed back so the simulated detector is exact and the tests have something
-    to assert against.
+    This is not a placeholder image, and it is not open-loop. The subject sits
+    at a real bearing in the room and drifts slowly; where it lands in the
+    frame depends on where the head is currently pointing, which is fed back
+    from the motion service. Turn the head and the subject moves across the
+    frame exactly as it would through a real lens, so face tracking genuinely
+    converges here - and a regression that makes Rocky overshoot or hunt shows
+    up in the simulator instead of on your desk.
+
+    If the subject falls outside the lens's field of view it is simply not in
+    the picture, which is what makes the idle scanning behaviour meaningful.
     """
 
     def __init__(self, cfg: VisionConfig, *, downscale: int = 8) -> None:
@@ -107,18 +111,39 @@ class SimCamera(CameraBackend):
         self.h = max(24, cfg.height // downscale)
         self._t0 = time.time()
         self._seq = 0
+        self._head = (0.0, 0.0)      # pan, tilt in degrees
+        self.drift = True            # off makes the subject hold still, for tests
 
-    def subject_position(self, t: float | None = None) -> tuple[float, float, float, float]:
-        """Where the subject is right now, normalised: cx, cy, w, h."""
+    def set_head_angles(self, pan: float, tilt: float) -> None:
+        """Told by the vision service from the motion service's pose."""
+        self._head = (pan, tilt)
+
+    def subject_bearing(self, t: float | None = None) -> tuple[float, float, float]:
+        """Where the subject actually is in the room: azimuth, elevation,
+        distance-driven angular size, all in degrees."""
+        if not self.drift:
+            return 18.0, -4.0, 22.0
         t = (time.time() if t is None else t) - self._t0
-        cx = 0.5 + 0.30 * math.sin(t * 0.21)
-        cy = 0.45 + 0.10 * math.sin(t * 0.13 + 1.1)
-        size = 0.20 + 0.05 * math.sin(t * 0.09 + 0.4)
-        return cx, cy, size, size * 1.25
+        az = 26.0 * math.sin(t * 0.17)
+        el = -4.0 + 6.0 * math.sin(t * 0.11 + 1.1)
+        size = 22.0 + 4.0 * math.sin(t * 0.09 + 0.4)
+        return az, el, size
+
+    def subject_position(self, t: float | None = None) -> tuple[float, float, float, float] | None:
+        """Where the subject appears in frame, or None if it is out of view."""
+        az, el, ang_size = self.subject_bearing(t)
+        pan, tilt = self._head
+        cx = 0.5 + (az - pan) / self.cfg.h_fov_deg
+        cy = 0.5 - (el - tilt) / self.cfg.v_fov_deg
+        bw = ang_size / self.cfg.h_fov_deg
+        bh = bw * 1.25
+        if not (-bw < cx < 1 + bw) or not (-bh < cy < 1 + bh):
+            return None
+        return cx, cy, bw, bh
 
     def capture(self) -> CapturedFrame | None:
         self._seq += 1
-        cx, cy, bw, bh = self.subject_position()
+        subject = self.subject_position()
         w, h, = self.w, self.h
         px = bytearray(w * h * 3)
 
@@ -135,6 +160,14 @@ class SimCamera(CameraBackend):
                 i = row + x * 3
                 px[i], px[i + 1], px[i + 2] = base
 
+        if subject is None:
+            return CapturedFrame(
+                data=encode_png(bytes(px), w, h), mime="image/png",
+                width=w, height=h,
+                signature=luma_signature(bytes(px), w, h), truth=None,
+            )
+
+        cx, cy, bw, bh = subject
         # subject: a head-ish ellipse with a torso below it
         hx, hy = cx * w, cy * h
         rx, ry = bw * w * 0.5, bh * h * 0.5

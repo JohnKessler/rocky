@@ -43,6 +43,10 @@ class VisionService(Service):
         self.camera = make_camera(self.config.hardware.camera, cfg)
         self.detector = make_detector(cfg, self.camera.kind)
         self.log.info("camera=%s detector=%s", self.camera.kind, self.detector.kind)
+        # Close the loop in simulation: the synthetic camera needs to know
+        # where the head is pointing, or tracking can never converge.
+        if hasattr(self.camera, "set_head_angles"):
+            self.bus.subscribe(ev.POSE, self._on_pose)
 
     async def teardown(self) -> None:
         if self.detector:
@@ -51,6 +55,9 @@ class VisionService(Service):
         if self.camera:
             self.camera.close()
             self.camera = None
+
+    async def _on_pose(self, _topic: str, e: ev.Pose) -> None:
+        self.camera.set_head_angles(e.pan, e.tilt)
 
     async def run(self) -> None:
         cfg = self.config.vision
