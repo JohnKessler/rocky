@@ -97,6 +97,11 @@ $EDITOR rocky_params.scad     # change what you need
 ./build_all.sh faceplate      # or just one part
 ```
 
+The exports are **binary STL** — every slicer reads them, and they are about a
+third the size of the ASCII form for the same geometry. Binary STL stores
+float32 coordinates, which resolves to well under a micron at the size of these
+parts; the printer's own resolution is four orders of magnitude coarser.
+
 `build_all.sh` runs `check_stl.py` over every export and fails the build if any
 mesh is not watertight, is non-manifold, has inconsistent winding, or has come
 out in more than one piece. Several of those conditions produce a slice that
