@@ -86,8 +86,14 @@ conductors are part of the pan-joint harness.
 
 | MAX98357A | Speaker |
 |-----------|---------|
-| `+` | red |
-| `-` | black |
+| `+` | speaker `+` |
+| `-` | speaker `-` |
+
+Do not go by wire colour. Adafruit's 3968 shipped red/black leads until its
+January 2024 revision and does not any more, and generic 40 mm drivers are
+inconsistent about it. Find the terminal marked `+` on the frame, or touch a
+1.5 V cell across the terminals and watch which way the cone moves — out is
+positive.
 
 Not polarity critical with one driver, but stay consistent so a future second
 speaker is in phase.

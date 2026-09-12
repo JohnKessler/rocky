@@ -10,6 +10,11 @@ have in a drawer.
 > printed parts are parameterised so substitutions are a number change rather
 > than a redesign. Where a dimension feeds the CAD, the parameter name is given
 > so you know what to edit.
+>
+> Vendor SKUs were last checked on **12 September 2026**. Three were wrong at
+> that point and are corrected below: the Qwiic cable had been retired, the
+> speaker had been relabelled and had lost its colour-coded leads, and the
+> microphone that was suggested does not fit the printed mount.
 
 Vendor shorthand: **SF** SparkFun · **AF** Adafruit · **RPi** Raspberry Pi (or
 any approved reseller) · **WS** Waveshare · **\*** generic, buy anywhere.
@@ -37,7 +42,7 @@ any approved reseller) · **WS** Waveshare · **\*** generic, buy anywhere.
 
 | # | Part | Specification | Where | ~Cost |
 |---|------|---------------|-------|-------|
-| 3.1 | Raspberry Pi Camera Module 3 **Wide** | 12 MP IMX708, autofocus, 102° × 67° FOV. The wide version is the right call: the standard lens's 66° is too narrow to find you when Rocky is looking somewhere else. FOV feeds `vision.h_fov_deg` / `v_fov_deg` — get these wrong and Rocky consistently mis-aims when it turns to look at you. | RPi / AF 5658 | £30 |
+| 3.1 | Raspberry Pi Camera Module 3 **Wide** | 12 MP IMX708, autofocus, 102° × 67° FOV. Vendors advertise this lens as **120°**, which is the *diagonal* figure; 102° × 67° is the same lens measured horizontally and vertically, and horizontal is what the tracking maths wants. The wide version is the right call: the standard lens's 66° is too narrow to find you when Rocky is looking somewhere else. FOV feeds `vision.h_fov_deg` / `v_fov_deg` — get these wrong and Rocky consistently mis-aims when it turns to look at you. | RPi / AF 5658 | £30 |
 | 3.2 | Camera FPC cable, 22-pin → 15-pin, 200 mm | Again Pi 5 specific, and again *not* the display cable. | AF 5818 / WS | £5 |
 
 ## 4. Motion
@@ -48,7 +53,7 @@ any approved reseller) · **WS** Waveshare · **\*** generic, buy anywhere.
 | 4.2 | Tilt servo — micro, metal gear | 23 × 12.2 × 22.5 mm, ≥ 2 kg·cm. MG90S or Hitec HS-5065MG. **A standard servo will not fit** beside the Pi in the head — the head is sized around a micro here. Dimensions feed `msv_*`. | SF / \* | £8 |
 | 4.3 | PCA9685 16-channel PWM/servo driver | I²C, 12-bit, external servo supply via screw terminal. Only two channels are used; the rest are there when you want to add something. | AF 815 / SF | £12 |
 | 4.4 | Qwiic SHIM for Raspberry Pi | Slips over the GPIO header and gives you I²C on a connector **without covering the header**, which is what leaves GPIO 18/19/21 free for the amplifier. | SF DEV-15794 | £2 |
-| 4.5 | Qwiic cable, 4-pin → female jumpers, 150 mm | Connects the SHIM to the PCA9685's I²C header. | SF CAB-14988 | £2 |
+| 4.5 | Qwiic cable, 4-pin → female jumpers | Connects the SHIM to the PCA9685's I²C header. Wires are red/black/blue/yellow, matching the table in [WIRING.md](WIRING.md). **CAB-14988 (150 mm) is retired** — the current equivalent is the *Flexible Qwiic Cable – Female Jumper (4-pin)*, CAB-17261. Check the length suits; anything from 100–200 mm is fine. | SF CAB-17261 | £2 |
 | 4.6 | Chrome steel balls, 6 mm × 30 | The slew ring. Buy 30 for 24 positions — you will lose some. 6 mm airsoft BBs work but wear faster and are noisier. | \* | £4 |
 | 4.7 | 623ZZ bearing (3 × 10 × 4 mm) | The tilt idler pivot. | \* | £1 |
 | 4.8 | 470 µF 10 V electrolytic capacitor | Across the servo rail at the PCA9685. Not optional — servo inrush browns out the I²C bus without it, and the symptom is Rocky freezing mid-move for no visible reason. | \* | £1 |
@@ -58,8 +63,8 @@ any approved reseller) · **WS** Waveshare · **\*** generic, buy anywhere.
 | # | Part | Specification | Where | ~Cost |
 |---|------|---------------|-------|-------|
 | 5.1 | MAX98357A I²S class-D amplifier | 3 W into 4 Ω, I²S in. The Pi 5 has no headphone jack, so this is required rather than optional. Mounts in the **head**, beside the Pi — that way the pan joint carries two analogue speaker conductors instead of five digital ones. | AF 3006 / SF | £6 |
-| 5.2 | Speaker, 40 mm, 4 Ω, 3 W | Mounts in the **base** floor, firing down into the gap the legs hold open. Frame diameter feeds `spk_d`. | AF 3968 / \* | £4 |
-| 5.3 | USB microphone | Anything that enumerates as a USB audio input. A small far-field array (ReSpeaker USB Mic Array, or similar) is a large improvement over a single capsule if Rocky sits more than a metre away. Body diameter feeds `usb_mic_d` in `mic_mount.scad`. | AF 3367 / \* | £8–£55 |
+| 5.2 | Speaker, 40 mm, 4 Ω, 3–5 W | Mounts in the **base** floor, firing down into the gap the legs hold open. Frame diameter feeds `spk_d`; the body is about 20 mm deep. Adafruit now lists 3968 as **5 W** where distributors still print 3 W — same part, and the extra headroom is harmless since the amplifier only delivers 3.2 W. The January 2024 revision has a concave cone and **no longer ships red/black leads**, so identify polarity yourself rather than by colour. | AF 3968 / \* | £4 |
+| 5.3 | USB microphone, **cylindrical body ~14 mm** | Anything that enumerates as a USB audio input, but `mic_mount.scad` is a round saddle: the body must be a cylinder, and its diameter feeds `usb_mic_d`. A gooseneck or stick mic suits. **A flat USB-stick mic will not fit** — Adafruit's Mini USB Microphone (3367) is 22.2 × 18.3 × 7.0 mm and has no round body to clamp; use one only if you redraw the saddle as a rectangular pocket. A small far-field array (ReSpeaker USB Mic Array, or similar) is a large improvement over a single capsule if Rocky sits more than a metre away, and is a separate mounting problem again. | \* | £8–£55 |
 | 5.4 | USB-A right-angle adapter or short extension | The Pi's ports face sideways inside the head; a straight plug fouls the shell. | \* | £3 |
 
 ## 6. Power
