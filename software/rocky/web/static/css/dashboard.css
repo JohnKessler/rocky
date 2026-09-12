@@ -1,0 +1,227 @@
+/* Rocky's dashboard.
+ * Instrument panel rather than web page: dark, dense, and readable at a
+ * glance from across the desk while Rocky is actually doing something. */
+
+:root {
+  --bg: #0a0d14;
+  --panel: #121724;
+  --panel-2: #171d2e;
+  --line: #232c44;
+  --ink: #dde5f2;
+  --muted: #7d8aa6;
+  --accent: #6fd3e7;
+  --accent-dim: #2b7385;
+  --warn: #e0b15f;
+  --bad: #e0715f;
+  --good: #78d39b;
+  --radius: 10px;
+  --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------------------------------------------------------------- header */
+
+.bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  padding: 10px 18px;
+  background: linear-gradient(180deg, #131a2a, #0d1220);
+  border-bottom: 1px solid var(--line);
+  position: sticky; top: 0; z-index: 10;
+}
+.brand { display: flex; align-items: center; gap: 10px; font-size: 16px; }
+.brand strong { letter-spacing: 0.04em; }
+.dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--bad); box-shadow: 0 0 8px currentColor; color: var(--bad);
+  transition: background .3s, color .3s;
+}
+.dot.up { background: var(--good); color: var(--good); }
+.muted { color: var(--muted); }
+
+.pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.pill {
+  font: 11px/1 var(--mono);
+  padding: 6px 10px; border-radius: 999px;
+  background: var(--panel-2); border: 1px solid var(--line); color: var(--muted);
+  white-space: nowrap;
+}
+.pill.active { color: var(--accent); border-color: var(--accent-dim); }
+.pill.hot { color: var(--warn); border-color: var(--warn); }
+.pill.bad { color: var(--bad); border-color: var(--bad); }
+
+/* ------------------------------------------------------------------ tabs */
+
+.tabs {
+  display: flex; gap: 2px; padding: 0 12px; flex-wrap: wrap;
+  background: #0c111c; border-bottom: 1px solid var(--line);
+}
+.tabs button {
+  background: none; border: 0; border-bottom: 2px solid transparent;
+  color: var(--muted); padding: 11px 14px; cursor: pointer;
+  font-size: 13px; font-family: inherit;
+}
+.tabs button:hover { color: var(--ink); }
+.tabs button.on { color: var(--accent); border-bottom-color: var(--accent); }
+
+main { padding: 18px; max-width: 1500px; margin: 0 auto; }
+.tab { display: none; }
+.tab.on { display: block; }
+
+/* ----------------------------------------------------------------- cards */
+
+.grid {
+  display: grid; gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+}
+.live-grid { grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+.span2 { grid-column: 1 / -1; }
+
+.card {
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 14px 16px 16px;
+}
+.card h2 {
+  margin: 0 0 12px; font-size: 12px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+  display: flex; align-items: center; gap: 8px;
+}
+.chip {
+  font: 11px/1 var(--mono); text-transform: none; letter-spacing: 0;
+  padding: 4px 8px; border-radius: 5px;
+  background: var(--panel-2); color: var(--accent); border: 1px solid var(--line);
+}
+
+/* ------------------------------------------------------------------ face */
+
+.face {
+  width: 100%; max-width: 380px; aspect-ratio: 1; display: block; margin: 0 auto;
+  background: #05070d; border-radius: 50%;
+  box-shadow: inset 0 0 60px rgba(0,0,0,.8), 0 0 0 6px #0d1220, 0 0 0 7px var(--line);
+}
+
+.camwrap { position: relative; border-radius: 8px; overflow: hidden; background: #05070d; }
+.camwrap img { width: 100%; display: block; aspect-ratio: 16/9; object-fit: cover; }
+#cam-overlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+/* -------------------------------------------------------------- readouts */
+
+.readout {
+  font: 11px/1.6 var(--mono); color: var(--muted);
+  margin-top: 10px; word-break: break-word; white-space: pre-wrap;
+}
+
+.posegrid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 10px; margin-bottom: 12px;
+}
+.posegrid label { display: block; font-size: 11px; color: var(--muted); }
+.posegrid output { font: 15px/1.4 var(--mono); color: var(--accent); }
+
+.posemap { width: 100%; height: 120px; background: #0b0f1a; border-radius: 8px; }
+
+.meter {
+  height: 12px; background: #0b0f1a; border-radius: 999px;
+  overflow: hidden; border: 1px solid var(--line); margin-bottom: 12px;
+}
+#level-bar {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--accent-dim), var(--accent));
+  transition: width .08s linear;
+}
+
+/* -------------------------------------------------------------- controls */
+
+.row { display: flex; gap: 8px; align-items: center; margin-top: 10px; }
+.row.wrap { flex-wrap: wrap; }
+.row input[type=text], .row input:not([type]) { flex: 1; }
+
+input:not([type=range]), select {
+  background: #0b0f1a; border: 1px solid var(--line); color: var(--ink);
+  border-radius: 7px; padding: 8px 10px; font: inherit; min-width: 0;
+}
+input:focus, select:focus { outline: none; border-color: var(--accent-dim); }
+
+button {
+  background: var(--panel-2); border: 1px solid var(--line); color: var(--ink);
+  border-radius: 7px; padding: 8px 13px; cursor: pointer;
+  font: inherit; font-size: 13px; white-space: nowrap;
+}
+button:hover { border-color: var(--accent-dim); color: var(--accent); }
+button:active { transform: translateY(1px); }
+button.on { border-color: var(--accent); color: var(--accent); }
+button.danger:hover { border-color: var(--bad); color: var(--bad); }
+
+.palette { display: flex; flex-wrap: wrap; gap: 7px; }
+.palette button { font-size: 12px; padding: 7px 11px; }
+.palette button small { display: block; color: var(--muted); font-size: 10px; }
+
+label.slider {
+  display: block; font-size: 12px; color: var(--muted); margin: 10px 0;
+}
+label.slider output { color: var(--accent); font-family: var(--mono); }
+input[type=range] {
+  width: 100%; margin-top: 5px; accent-color: var(--accent);
+  background: transparent;
+}
+
+/* -------------------------------------------------------------- settings */
+
+.settings { display: grid; gap: 2px; }
+.setting {
+  display: grid; grid-template-columns: minmax(180px, 1.4fr) 2fr 90px;
+  gap: 12px; align-items: center;
+  padding: 7px 8px; border-radius: 6px;
+}
+.setting:nth-child(odd) { background: rgba(255,255,255,.015); }
+.setting .key { font: 11px/1.4 var(--mono); color: var(--ink); }
+.setting .key small { display: block; color: var(--muted); font-family: inherit; font-size: 11px; }
+.setting .val { font: 12px/1 var(--mono); color: var(--accent); text-align: right; }
+.setting.invalid .val { color: var(--bad); }
+.setting input[type=checkbox] { justify-self: start; width: 18px; height: 18px; }
+
+.facts { display: grid; gap: 6px; margin-top: 12px; }
+.fact {
+  display: flex; gap: 10px; align-items: center; justify-content: space-between;
+  padding: 9px 11px; background: var(--panel-2);
+  border: 1px solid var(--line); border-radius: 7px;
+}
+.fact .cat {
+  font: 10px/1 var(--mono); color: var(--muted);
+  border: 1px solid var(--line); padding: 3px 6px; border-radius: 4px;
+}
+.fact button { padding: 4px 9px; font-size: 11px; }
+
+/* ------------------------------------------------------------ transcript */
+
+.transcript {
+  max-height: 340px; overflow-y: auto; display: flex;
+  flex-direction: column; gap: 7px; padding-right: 4px;
+}
+.transcript.small { max-height: 260px; font-size: 12px; }
+.transcript.mono { font-family: var(--mono); font-size: 11px; }
+
+.line { padding: 7px 11px; border-radius: 8px; background: var(--panel-2); }
+.line.user { border-left: 2px solid var(--muted); }
+.line.rocky { border-left: 2px solid var(--accent); }
+.line.event { color: var(--muted); font: 11px/1.5 var(--mono); background: none; padding: 2px 0; }
+.line.ERROR, .line.CRITICAL { color: var(--bad); }
+.line.WARNING { color: var(--warn); }
+.line time { color: var(--muted); font: 10px/1 var(--mono); margin-right: 8px; }
+
+.hint { color: var(--muted); font-size: 12px; margin-top: 10px; }
+
+@media (max-width: 620px) {
+  .setting { grid-template-columns: 1fr; gap: 4px; }
+  .setting .val { text-align: left; }
+  main { padding: 12px; }
+}

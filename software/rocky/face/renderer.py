@@ -182,6 +182,7 @@ class PygameRenderer(FaceRenderer):
         pygame.display.set_caption("Rocky")
         self.surface = pygame.Surface((cfg.width, cfg.height), pygame.SRCALPHA)
         self.glow_surface = pygame.Surface((cfg.width, cfg.height), pygame.SRCALPHA)
+        self.eye_layer = pygame.Surface((cfg.width, cfg.height), pygame.SRCALPHA)
         self._mask = self._build_mask() if cfg.circular_mask else None
         log.info("pygame display %dx%d", cfg.width, cfg.height)
 
@@ -239,8 +240,12 @@ class PygameRenderer(FaceRenderer):
                 )
             self.surface.blit(self.glow_surface, (0, 0))
 
+        # The eyes live on their own transparent layer so their lids can
+        # erase, leaving the glow behind them untouched.
+        self.eye_layer.fill((0, 0, 0, 0))
         for eye in (geo.left, geo.right):
-            self._draw_eye(eye, dx, dy)
+            self._draw_eye(self.eye_layer, eye, dx, dy)
+        self.surface.blit(self.eye_layer, (0, 0))
 
         if geo.brow_alpha > 0.03:
             col = (*_rgb(pal.iris), int(255 * geo.brow_alpha))
@@ -264,13 +269,20 @@ class PygameRenderer(FaceRenderer):
             self.screen.blit(self._mask, (0, 0))
         pygame.display.flip()
 
-    def _draw_eye(self, eye: EyeShape, dx: float, dy: float) -> None:
+    def _draw_eye(self, surface, eye: EyeShape, dx: float, dy: float) -> None:
+        """Paint one eye onto a transparent layer.
+
+        The lids erase rather than overpaint. Painting them in the background
+        colour looks right on a flat backdrop and wrong the moment there is a
+        glow behind the eye - it stamps a visible block out of it.
+        """
         pygame = self.pygame
         pal = self.cfg.palette
+        erase = (0, 0, 0, 0)
+
         if eye.ry < 1.5:
-            # Fully shut: a line, not a sliver of ellipse.
             pygame.draw.line(
-                self.surface, _rgb(pal.iris),
+                surface, _rgb(pal.iris),
                 (eye.cx - eye.rx + dx, eye.cy + dy), (eye.cx + eye.rx + dx, eye.cy + dy),
                 max(2, int(eye.rx * 0.13)),
             )
@@ -279,49 +291,51 @@ class PygameRenderer(FaceRenderer):
         rect = pygame.Rect(
             eye.cx - eye.rx + dx, eye.cy - eye.ry + dy, eye.rx * 2, eye.ry * 2
         )
-        pygame.draw.ellipse(self.surface, _rgb(pal.iris), rect)
+        pygame.draw.ellipse(surface, _rgb(pal.iris), rect)
         pygame.draw.circle(
-            self.surface, _rgb(pal.iris_inner),
+            surface, _rgb(pal.iris_inner),
             (int(eye.pupil_cx + dx), int(eye.pupil_cy + dy)), int(eye.pupil_r),
         )
         # Catchlight - small, offset, and the single cheapest thing that makes
         # an eye look alive rather than printed.
         pygame.draw.circle(
-            self.surface, (255, 255, 255),
+            surface, (255, 255, 255),
             (int(eye.pupil_cx + eye.pupil_r * 0.35 + dx),
              int(eye.pupil_cy - eye.pupil_r * 0.4 + dy)),
             max(1, int(eye.pupil_r * 0.22)),
         )
 
-        bg = _rgb(pal.background)
+        left = eye.cx - eye.rx - 3 + dx
+        right = eye.cx + eye.rx + 3 + dx
+
         if eye.arc > 0.02:
-            # Smiling eyes: mask the lower half with an upward bulge.
-            bulge = eye.ry * eye.arc
-            points = [
-                (eye.cx - eye.rx - 2 + dx, eye.cy + eye.ry + 2 + dy),
-                (eye.cx - eye.rx - 2 + dx, eye.cy + dy),
-                (eye.cx + dx, eye.cy - bulge + dy),
-                (eye.cx + eye.rx + 2 + dx, eye.cy + dy),
-                (eye.cx + eye.rx + 2 + dx, eye.cy + eye.ry + 2 + dy),
-            ]
-            pygame.draw.polygon(self.surface, bg, points)
+            # Smiling eyes. The lid eats upward from the bottom in proportion
+            # to arc; the factor is capped so a sliver of eye survives at
+            # arc = 1, or a delighted Rocky has no eyes at all.
+            base = eye.cy + eye.ry * (1.0 - 1.55 * eye.arc) + dy
+            bulge = eye.ry * eye.arc * 0.5
+            points = [(left, eye.cy + eye.ry + 4 + dy)]
+            steps = 16
+            for i in range(steps + 1):
+                u = i / steps
+                points.append((left + (right - left) * u, base - bulge * math.sin(math.pi * u)))
+            points.append((right, eye.cy + eye.ry + 4 + dy))
+            pygame.draw.polygon(surface, erase, points)
         elif eye.arc < -0.02:
-            # Worried eyes: mask the top, inner corner high.
-            drop = eye.ry * -eye.arc
-            points = [
-                (eye.cx - eye.rx - 2 + dx, eye.cy - eye.ry - 2 + dy),
-                (eye.cx - eye.rx - 2 + dx, eye.cy - eye.ry + drop + dy),
-                (eye.cx + eye.rx + 2 + dx, eye.cy - eye.ry - 2 + dy),
-            ]
-            pygame.draw.polygon(self.surface, bg, points)
+            # Worried eyes: a heavy upper lid. The sad slant comes from the
+            # brows, which is where people actually read it.
+            drop = eye.ry * (1.0 - 1.4 * -eye.arc)
+            pygame.draw.rect(
+                surface, erase,
+                pygame.Rect(left, eye.cy - eye.ry - 4 + dy,
+                            right - left, (eye.ry - drop) + 4),
+            )
 
         if eye.lid_bottom > 0.5:
             pygame.draw.rect(
-                self.surface, bg,
-                pygame.Rect(
-                    eye.cx - eye.rx - 2 + dx, eye.cy + eye.ry - eye.lid_bottom + dy,
-                    eye.rx * 2 + 4, eye.lid_bottom + 4,
-                ),
+                surface, erase,
+                pygame.Rect(left, eye.cy + eye.ry - eye.lid_bottom + dy,
+                            right - left, eye.lid_bottom + 4),
             )
 
     def _draw_mouth(self, geo: Layout, dx: float, dy: float) -> None:
@@ -334,8 +348,10 @@ class PygameRenderer(FaceRenderer):
             x = geo.mouth_cx - geo.mouth_w / 2 + geo.mouth_w * u + dx
             # A parabola through the corners; the sign of curve flips smile
             # and frown, and mouth_h opens it.
+            # Negated: a positive curve has to put the centre of the mouth
+            # LOWER than its corners, which is a smile.
             bend = (u - 0.5) ** 2 * 4.0 - 1.0
-            y_mid = geo.mouth_cy + bend * geo.mouth_curve * geo.mouth_w * 0.22 + dy
+            y_mid = geo.mouth_cy - bend * geo.mouth_curve * geo.mouth_w * 0.22 + dy
             half = geo.mouth_h / 2 * math.sin(math.pi * u) ** 0.6
             top.append((x, y_mid - half))
             bottom.append((x, y_mid + half))
