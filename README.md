@@ -1,5 +1,7 @@
 # Rocky
 
+[![CI](https://github.com/JohnKessler/rocky/actions/workflows/ci.yml/badge.svg)](https://github.com/JohnKessler/rocky/actions/workflows/ci.yml)
+
 A compact desk companion. A round face that shows what it is thinking, a camera
 that watches the room, a head on two motors that turns to look at you, and a
 voice with opinions.
