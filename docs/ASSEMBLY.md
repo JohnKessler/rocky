@@ -11,6 +11,10 @@ five minutes.
 You will need: hex drivers, a small screwdriver, side cutters, a soldering iron
 with a heat-set insert tip, calipers, and grease.
 
+**At the bench:** open [bench-guide.html](bench-guide.html) on your phone. It is
+this document as one stage at a time, with the figures, the fastener list for
+each stage, and steps you can tick off as you go.
+
 <!-- figure:exploded -->
 ![Rocky, exploded](../hardware/img/assembly-exploded.png)
 

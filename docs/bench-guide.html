@@ -1,0 +1,664 @@
+<title>Rocky Bench Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --paper:#F3F4F5; --card:#FFFFFF; --sunk:#EAECEF;
+  --ink:#1C212B; --muted:#666F7D; --rule:#D6DAE0; --rule-firm:#B9C0C9;
+  --slate:#4C566A; --slate-soft:#8A94A4;
+  --copper:#A85630; --copper-lift:#C1683C;
+  --plate:#F5F5F5; --plate-edge:#C9CED5; --plate-ink:#2B3240;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#13161B; --card:#1B1F26; --sunk:#22272F;
+    --ink:#E3E7ED; --muted:#8D97A5; --rule:#2B313A; --rule-firm:#3A424E;
+    --slate:#93A0B5; --slate-soft:#6B7688;
+    --copper:#E08A57; --copper-lift:#EFA47A;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#13161B; --card:#1B1F26; --sunk:#22272F;
+  --ink:#E3E7ED; --muted:#8D97A5; --rule:#2B313A; --rule-firm:#3A424E;
+  --slate:#93A0B5; --slate-soft:#6B7688;
+  --copper:#E08A57; --copper-lift:#EFA47A;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  font-size:17px; line-height:1.55; -webkit-text-size-adjust:100%;
+}
+h1,h2,h3,.disp{font-family:Archivo,"Arial Narrow",system-ui,sans-serif;text-wrap:balance}
+code,kbd,.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+a{color:var(--copper)}
+:focus-visible{outline:2.5px solid var(--copper);outline-offset:2px;border-radius:3px}
+
+/* ---------- masthead ---------- */
+.top{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--rule)}
+.top-in{max-width:720px;margin:0 auto;padding:10px 16px 0}
+.brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.brand h1{font-size:19px;font-weight:800;letter-spacing:-.01em;margin:0}
+.brand .sub{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-family:Archivo,sans-serif;font-weight:600}
+.brand .pct{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:600;color:var(--copper);font-variant-numeric:tabular-nums}
+.meter{height:3px;background:var(--rule);margin-top:8px;border-radius:2px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--copper);width:0;transition:width .35s cubic-bezier(.4,0,.2,1)}
+
+.rail{display:flex;gap:6px;overflow-x:auto;padding:10px 16px;margin:0 -16px;scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+.rail button{
+  flex:0 0 auto;appearance:none;cursor:pointer;
+  font-family:Archivo,sans-serif;font-weight:700;font-size:13px;
+  background:transparent;color:var(--muted);
+  border:1px solid var(--rule-firm);border-radius:999px;padding:6px 13px;
+  display:inline-flex;align-items:center;gap:6px;white-space:nowrap;
+}
+.rail button:hover{color:var(--ink);border-color:var(--slate-soft)}
+.rail button[aria-current="true"]{background:var(--slate);border-color:var(--slate);color:var(--card)}
+.rail .tick{width:6px;height:6px;border-radius:50%;background:var(--copper);flex:0 0 auto}
+.rail button[aria-current="true"] .tick{background:var(--copper-lift)}
+
+/* ---------- page body ---------- */
+main{max-width:720px;margin:0 auto;padding:0 16px;padding-block:26px 64px}
+.stage-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:6px}
+.stage-num{
+  font-family:Archivo,sans-serif;font-weight:800;font-size:40px;line-height:.9;
+  color:var(--copper);font-variant-numeric:tabular-nums;letter-spacing:-.04em;
+}
+.stage-head h2{margin:0;font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.stage-head .eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-family:Archivo,sans-serif;font-weight:600;display:block;margin-bottom:3px}
+.lede{color:var(--muted);margin:0 0 22px;max-width:62ch}
+
+/* ---------- plate (figures keep their own light ground) ---------- */
+figure.plate{margin:0 0 22px;background:var(--plate);border:1px solid var(--plate-edge);border-radius:2px;overflow:hidden}
+figure.plate>.img{padding:6px}
+figure.plate img{display:block;width:100%;max-width:100%;height:auto}
+figure.plate .scroller{overflow-x:auto}
+figure.plate .scroller img{min-width:820px}
+figcaption{border-top:1px solid var(--plate-edge);background:var(--plate);color:var(--plate-ink);padding:12px 14px;display:grid;gap:7px}
+figcaption .key{display:flex;gap:9px;align-items:baseline;font-size:14.5px;line-height:1.35}
+figcaption .disc{
+  flex:0 0 auto;width:20px;height:20px;border-radius:50%;
+  background:#6E8291;color:#0E1620;font-family:Archivo,sans-serif;font-weight:800;
+  font-size:12px;display:grid;place-items:center;transform:translateY(2px)
+}
+figcaption .plain{font-size:13px;color:#5A6472;letter-spacing:.04em}
+
+/* ---------- kit strip ---------- */
+.kit{background:var(--sunk);border-radius:2px;padding:13px 15px;margin:0 0 22px}
+.kit h3{margin:0 0 8px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.kit ul{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.kit li{font-family:"IBM Plex Mono",monospace;font-size:12.5px;background:var(--card);border:1px solid var(--rule);padding:3px 8px;border-radius:2px;color:var(--ink)}
+
+/* ---------- steps ---------- */
+ol.steps{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+ol.steps>li{background:var(--card);border:1px solid var(--rule);border-radius:2px}
+ol.steps>li+li{margin-top:-1px}
+.step{display:flex;gap:0;align-items:stretch;width:100%;text-align:left;background:none;border:0;padding:0;cursor:pointer;font:inherit;color:inherit}
+.box{flex:0 0 auto;width:54px;display:grid;place-items:center;border-right:1px solid var(--rule);background:transparent}
+.box span{
+  width:24px;height:24px;border:2px solid var(--rule-firm);border-radius:2px;
+  display:grid;place-items:center;color:transparent;font-size:15px;font-weight:700;line-height:1;
+  transition:background .12s,border-color .12s
+}
+.step-body{flex:1 1 auto;padding:13px 15px 14px;min-width:0}
+.step-n{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);letter-spacing:.08em;display:block;margin-bottom:2px}
+.step-t{display:block}
+li.done .box span{background:var(--copper);border-color:var(--copper);color:#fff}
+li.done .step-t,li.done .step-n{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--rule-firm);text-decoration-thickness:1px}
+.step:hover .box span{border-color:var(--copper)}
+
+.warn{margin:10px 0 0;padding:10px 0 10px 14px;border-left:3px solid var(--slate);font-size:15px;color:var(--ink)}
+.warn b{font-family:Archivo,sans-serif;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--slate);display:block;margin-bottom:2px}
+.aside{margin:22px 0;padding:14px 16px;border-left:3px solid var(--copper);background:var(--sunk);font-size:15.5px}
+.aside p{margin:0}
+.aside p+p{margin-top:8px}
+
+pre{background:var(--sunk);border:1px solid var(--rule);border-radius:2px;padding:12px 14px;overflow-x:auto;font-size:13.5px;margin:14px 0}
+pre code{color:var(--ink)}
+code{background:var(--sunk);padding:1px 5px;border-radius:2px;font-size:.88em}
+pre code{background:none;padding:0;font-size:1em}
+
+/* ---------- tables ---------- */
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:2px;margin:16px 0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:420px}
+th,td{text-align:left;padding:9px 13px;border-bottom:1px solid var(--rule);vertical-align:top}
+thead th{background:var(--sunk);font-family:Archivo,sans-serif;font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:600;white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+td.mono{font-family:"IBM Plex Mono",monospace;font-size:13px;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+h3.sec{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:34px 0 10px;padding-bottom:7px;border-bottom:1px solid var(--rule)}
+h3.sec:first-of-type{margin-top:0}
+
+/* ---------- footer nav ---------- */
+.nav{display:flex;gap:10px;margin-top:34px;padding-top:20px;border-top:1px solid var(--rule)}
+.nav button{
+  appearance:none;cursor:pointer;font-family:Archivo,sans-serif;font-weight:700;font-size:14px;
+  padding:11px 18px;border-radius:2px;border:1px solid var(--rule-firm);background:var(--card);color:var(--ink);
+}
+.nav button.go{background:var(--slate);border-color:var(--slate);color:#fff;margin-left:auto}
+.nav button:disabled{opacity:.35;cursor:default}
+.foot{margin-top:30px;font-size:13px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.foot button{appearance:none;background:none;border:0;padding:0;font:inherit;color:var(--muted);text-decoration:underline;cursor:pointer}
+.sync{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.04em}
+
+@media (max-width:430px){
+  body{font-size:16px}
+  .stage-num{font-size:32px}
+  .stage-head h2{font-size:22px}
+  .box{width:46px}
+  main{padding-block:20px 52px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <h1>Rocky</h1>
+      <span class="sub">Bench Guide</span>
+      <span class="pct" id="pct">0%</span>
+    </div>
+    <div class="meter"><i id="meter"></i></div>
+    <nav class="rail" id="rail" aria-label="Build stages"></nav>
+  </div>
+</header>
+
+<main id="main"></main>
+
+<script>
+// The figures sit beside the page when it is published, and in
+// hardware/img/ when it is opened from a checkout of the repository.
+const IMG = document.baseURI.indexOf("/docs/") >= 0 ? "../hardware/img/" : "img/";
+
+const STAGES = [
+{n:1,title:"Prepare the printed parts",fig:"exploded",
+ legend:["base_shell","base electronics","pan servo","base_deck (fixed race)","ball cage + 24 balls","turntable (rotating race)","yoke","head_back + Pi + tilt servo","display + faceplate"],
+ lede:"Do every heat-set insert now, in one session with the iron hot. Going back for one forgotten insert after wiring means undoing work.",
+ kit:["soldering iron","insert tip","calipers"],
+ steps:[
+  {t:"<code>base_shell</code> — <b>6 × M3</b> — tops of the tall deck bosses"},
+  {t:"<code>base_shell</code> — <b>4 × M2.5</b> — speaker mounting pads"},
+  {t:"<code>base_shell</code> — <b>4 × M2.5</b> — PCA9685 pads"},
+  {t:"<code>base_shell</code> — <b>4 × M2.5</b> — regulator pads"},
+  {t:"<code>base_deck</code> — <b>4 × M2.5</b> — <b>underside</b>, for the pan servo's ears"},
+  {t:"<code>turntable</code> — <b>4 × M3</b> — hub top, for the yoke"},
+  {t:"<code>head_back</code> — <b>4 × M2.5</b> — Pi standoffs"},
+  {t:"<code>head_back</code> — <b>3 × M3</b> — faceplate posts"},
+  {t:"<code>head_back</code> — <b>1 × M3</b> — right cheek, the tilt pivot"},
+  {t:"<code>head_back</code> — <b>1 × M3</b> — trim-weight post, rear"},
+  {t:"<code>head_back</code> — <b>2 × M2</b> — amplifier pads, rear wall"},
+  {t:"<code>head_back</code> — <b>4 × M2</b> — camera posts inside the brow"},
+  {t:"<code>head_back</code> — <b>2 × M2.5</b> — brow rim, for the window"},
+  {t:"<code>head_back</code> — <b>2 × M2</b> — brow, for the mic bracket"},
+  {t:"<code>faceplate</code> — <b>4 × M2.5</b> — display carrier bosses"},
+  {t:"Hand-thread a screw into every insert before moving on.",
+   warn:["No inserts for the tilt servo","Its two ear screws go straight into printed bosses as self-tappers."]}
+ ]},
+
+{n:2,title:"The base electronics",fig:"stage2",
+ legend:["speaker, magnet up","PCA9685 servo driver","5.1V regulator, feeds the Pi","6.0V regulator, feeds the servos"],
+ lede:"Build this as a subassembly, on the bench, before anything goes into the shell.",
+ kit:["4 × M2.5 × 10","8 × M2.5 × 6","TPU gasket","470 µF cap","22 AWG silicone","multimeter"],
+ steps:[
+  {t:"<b>Speaker.</b> TPU gasket on the base floor's raised ring, speaker on it facing <b>down</b> through the grille, four M2.5 × 10. Snug, not tight — over-tightening distorts the frame and it buzzes."},
+  {t:"<b>Speaker leads.</b> Solder a pair of 22 AWG silicone leads to the terminals, long enough to reach up through the pan joint. The amplifier lives in the head, not down here, so these two conductors are part of the harness."},
+  {t:"<b>Regulators.</b> Buck A and Buck B onto their pads with M2.5 × 6.",
+   warn:["Set both voltages now","5.1 V and 6.0 V, before anything is connected downstream. This is the last comfortable moment to do it — a module set to 12 V will destroy a Pi instantly."]},
+  {t:"<b>Servo driver.</b> PCA9685 onto its pads with M2.5 × 6. Solder the 470 µF capacitor across the screw terminal, minding polarity. Backwards, it vents."},
+  {t:"<b>Panel parts.</b> DC jack and switch into the base wall from the inside, wired through the fuse holder."},
+  {t:"<b>Test.</b> Power up. Both rails correct, <code>i2cdetect -y 1</code> finds <code>40</code>. Do not proceed until it does."}
+ ]},
+
+{n:3,title:"Pan servo and race deck",fig:"stage3",
+ legend:["servo ears bolt UP into the deck","body passes through the cutout","spline boss, horn goes here"],
+ lede:"The pan servo hangs from the deck rather than standing on the floor. The head's weight goes straight through the slew ring into the base wall, and it removes a bracket.",
+ kit:["4 × M2.5 × 10","6 × M3 × 12"],
+ steps:[
+  {t:"Set the servo to its <b>centre</b> before fitting it. Either run <code>rocky calibrate pan</code> on the bench, or move it gently by hand to the middle of its travel and count turns to each end."},
+  {t:"Offer the servo up to the deck's <b>underside</b>, body through the rectangular cutout, output shaft up. The ears sit flat against the deck."},
+  {t:"Four M2.5 × 10 up through the ears into the deck's inserts. Snug."},
+  {t:"Route the servo lead to channel <code>0</code> on the PCA9685."},
+  {t:"Lower the deck into the base shell onto the six bosses, race groove <b>up</b>. Six M3 × 12, counterbored from above so the heads sit below the race face.",
+   warn:["Check it sits flat","If the deck rocks, one boss printed proud. Sand it rather than forcing the screws."]}
+ ]},
+
+{n:4,title:"The slew ring",fig:"stage4",
+ legend:["grease the V groove, thinly","cage sets the ball spacing","24 x 6mm steel balls","horn screws up into the hub"],
+ lede:"This is the joint Rocky turns on, and the one place where a few minutes of care pays back every time it moves.",
+ kit:["24 × 6 mm steel balls","PTFE or lithium grease","round servo horn","4 × horn self-tappers"],
+ steps:[
+  {t:"Wipe both race grooves clean. Any stray strand of filament will be audible forever."},
+  {t:"A <b>thin</b> film of PTFE or lithium grease in the deck's groove. Thin — a thick bead collects dust and drags."},
+  {t:"Drop the <code>ball_cage</code> into the groove so its 24 holes sit over the race."},
+  {t:"One 6 mm ball into each hole. They will sit in the greased V."},
+  {t:"Fit the <b>servo horn</b> to the turntable: a round horn into the recess in the hub's underside, four small self-tappers up into the hub."},
+  {t:"Lower the turntable onto the balls, aligning the horn with the servo's spline. Rotate slowly by hand until the splines engage and it seats."},
+  {t:"Through the 6.5 mm access hole in the top of the hub, drive the servo's own centre screw into the shaft.",
+   warn:["This is the only axial retention","Nothing else stops the head lifting off the base."]},
+  {t:"Turn the head by hand, both ways. Smooth, near-silent, and it should stop firmly against the printed post at about ±100°.",
+   warn:["If it grinds or rocks","Grinding is too much grease or a ball out of its pocket. Rocking is a missing ball."]}
+ ]},
+
+{n:5,title:"The yoke",fig:"stage5",
+ legend:["4 x M3 x 16 into the hub","623ZZ bearing, press fit","tilt servo horn fits here"],
+ lede:"",
+ kit:["4 × M3 × 16","623ZZ bearing","vice or flat block"],
+ steps:[
+  {t:"Sit the yoke on the turntable hub, crossbar down, arms up."},
+  {t:"Four M3 × 16 down through the crossbar's counterbores into the hub's inserts. Tighten evenly."},
+  {t:"Press the <b>623ZZ bearing</b> into the pocket on the inside face of the <b>right</b> arm. It is an interference fit — press it square with a vice or a flat block, not a hammer."},
+  {t:"Leave the left arm alone for now. The tilt servo horn is fitted at Stage 8."}
+ ]},
+
+{n:6,title:"The head",fig:"stage6",
+ legend:["Pi 5, portrait, offset right","tilt servo, shaft through the cheek","camera in the brow","microphone","trim weights balance the head","I2S amplifier"],
+ lede:"Everything except the faceplate goes in through the open front.",
+ kit:["2 × M2 × 8","4 × M2.5 × 6","4 × M2 × 6 (camera)","2 × M2 × 6 (mic)","2 × M2 × 6 (amp)","2 × M2.5 × 8","right-angle USB adapter"],
+ steps:[
+  {t:"<b>Tilt servo.</b> Centre it first, the same way you centred the pan servo. Against the pad on the <b>left</b> inner cheek, output boss through the 11 mm hole so the spline protrudes outside the shell. Two M2 × 8 self-tappers through its ears into the pad. Route its lead down to the harness."},
+  {t:"<b>Raspberry Pi.</b> Four M2.5 × 6 onto the four posts rising from the rear wall, active cooler already fitted. Portrait, offset right to clear the tilt servo. Connect the cooler's fan to its header."},
+  {t:"<b>Ribbon cables.</b> Camera into <code>CAM/DISP 0</code>, display into <code>CAM/DISP 1</code>, blue stiffeners facing away from the board. Leave the far ends loose for now.",
+   warn:["They are not interchangeable","22-pin 0.5 mm at the Pi, 15-pin 1 mm at the device. A camera cable in a display socket will not work and can damage the panel."]},
+  {t:"<b>Camera.</b> Four M2 × 6 onto the posts inside the brow, lens forward. Connect the camera end of its ribbon."},
+  {t:"<b>Microphone.</b> Into the saddle of <code>mic_mount</code>, two M2 × 6 into the brow's inserts, port lined up behind the rosette of holes in <code>pod_window</code>. Route the USB lead down to the Pi — use the right-angle adapter, a straight plug fouls the shell."},
+  {t:"<b>Amplifier.</b> Two M2 × 6 onto the pads on the rear wall, above the Pi. Wire I²S and 5 V from the header, and its speaker output down through the harness to the base.",
+   warn:["Why it lives up here","So two analogue conductors cross the rotating joint instead of five digital ones. BCLK toggles at about 3 MHz; a flexing harness is not where you want that."]},
+  {t:"<b>Brow window.</b> <code>pod_window</code> onto the brow's rim, two M2.5 × 8. The lens should sit centred in its aperture without touching it."},
+  {t:"<b>Power and harness.</b> In through the 14 mm hole at the lower right of the shell. 5.1 V to the Pi's USB-C, I²C and tilt-servo conductors down to the base."}
+ ]},
+
+{n:7,title:"The faceplate",fig:"stage7",
+ legend:["display drops in from behind","4 x M2.5 into the faceplate","3 x M3 through the rim"],
+ lede:"",
+ kit:["4 × M2.5 × 6","3 × M3 × 16","something soft to work on"],
+ steps:[
+  {t:"Lay the faceplate face-down on something soft."},
+  {t:"Drop the display module into the pocket from behind, glass forward against the bezel's lip. It should sit flat with a little clearance all round.",
+   warn:["If it fouls, do not file","Correct <code>disp_glass_d</code> in <code>rocky_params.scad</code> and reprint. A filed pocket shows through the bezel."]},
+  {t:"Four M2.5 × 6 through the carrier's holes into the faceplate's inserts. Gentle — you are clamping glass."},
+  {t:"Connect the display ribbon."},
+  {t:"Offer the faceplate to the head, feeding slack ribbon back inside, and fix it with three M3 × 16 through the rim into the posts at 3, 9 and 6 o'clock. The three screw heads are visible on Rocky's face. That is intentional."}
+ ]},
+
+{n:8,title:"Join the head to the yoke",
+ lede:"Two people is easier. One to hold, one to drive screws.",
+ kit:["1 × M3 × 20","4 × M2 × 8","round servo horn"],
+ steps:[
+  {t:"Lower the head between the arms so the tilt servo's spline enters the <b>left</b> arm's recess and the <b>right</b> cheek's insert lines up with the bearing."},
+  {t:"<b>Right side.</b> M3 × 20 from outside the right arm, through the bearing, into the head's insert. Snug — the inner race clamps against the head, the outer race still turns freely."},
+  {t:"<b>Left side.</b> With the head level and the tilt servo still centred, fit the round horn into the arm's recess and drive four M2 × 8 from <b>outside</b> the arm into the horn.",
+   warn:["The horn splines set where level is","If the head ends up cocked, pull the four screws, lift the horn off one spline, and refit. Small trims are easier in software — <code>motion.tilt.centre_trim_deg</code>."]},
+  {t:"Tip the head through its full travel by hand. Free movement, stopping against the pins at about ±26°, crossbar clearing the head's lower corners at full tilt."}
+ ]},
+
+{n:9,title:"Balance the head",
+ lede:"Do not skip this. The tilt axis is meant to run through the head's centre of mass. Balanced, the tilt servo fights only inertia and friction — which is what makes a micro servo sufficient and what stops it humming and drifting.",
+ kit:["M3 screw","~10 × M8 washers"],
+ steps:[
+  {t:"Switch the servos off: <code>rocky run --sim</code> in another terminal, or leave the robot unpowered and disconnect the tilt servo lead."},
+  {t:"Hold the yoke and let the head hang free on its pivot."},
+  {t:"It will almost certainly tip forward — the display is the heaviest thing in there and it is all at the front."},
+  {t:"Stack M8 washers on an M3 screw into the trim post at the lower rear of the head shell. Add until the head sits level on its own and stays wherever you put it."},
+  {t:"Ten washers is typical, around 30 g.",
+   warn:["More than about twenty means something else is wrong","Check the Pi is on its posts and not resting forward."]}
+ ]},
+
+{n:10,title:"Close up and calibrate",fig:"harness",
+ legend:["11 conductors cross the joint","service loop, about 60mm slack","16mm bore at 30mm radius"],
+ lede:"",
+ kit:["4 × cable_clip","felt pads"],
+ steps:[
+  {t:"Dress the harness with the four <code>cable_clip</code> pieces. Check the service loop coils and uncoils across the full pan range without pulling or snagging."},
+  {t:"Felt pads under the five legs."},
+  {t:"Power up, then run the checks:",
+   code:"rocky check                # every backend should say \"ok\", not \"sim\"\nrocky calibrate pan        # a/d nudge, s saves\nrocky calibrate tilt"},
+  {t:"Start Rocky and open the dashboard:",
+   code:"rocky run\n# http://<your-pi>:8080"},
+  {t:"On the <b>Motion</b> tab, jog both axes to their limits and watch that nothing fouls. On <b>Expression</b>, click through the faces. On <b>Voice</b>, play a test tone and a few chords."}
+ ]}
+];
+
+const WIRING = {
+  lede:"Do all of this with the robot unpowered and unassembled, before Stage 2. Getting the electronics working on the bench is far easier than debugging them inside a closed head.",
+  diagrams:[
+    {src:"wiring-interconnect.svg",title:"Interconnect",note:"Everything, and which half of the robot it lives in."},
+    {src:"wiring-power.svg",title:"Power",note:"One 12 V input, two regulators. The Pi and the servos never share a rail."},
+    {src:"wiring-gpio.svg",title:"GPIO header",note:"Nine pins: four to the Qwiic SHIM, five to the amplifier."}
+  ],
+  harness:[
+    ["5.1V","20 AWG","Pi supply"],["GND","20 AWG","Pi supply return"],["GND","20 AWG","signal ground"],
+    ["SDA","26 AWG","I²C to the servo driver"],["SCL","26 AWG","I²C to the servo driver"],["3V3","26 AWG","I²C logic level"],
+    ["Tilt signal","26 AWG","PWM to the tilt servo"],["Tilt V+","26 AWG","6 V to the tilt servo"],["Tilt GND","26 AWG","tilt servo return"],
+    ["Speaker +","22 AWG","amplifier output, head to base"],["Speaker −","22 AWG","amplifier output return"]
+  ],
+  gpio:[["1","3V3","Qwiic SHIM"],["3","GPIO2 / SDA1","Qwiic SHIM"],["4","5V","amplifier Vin"],["5","GPIO3 / SCL1","Qwiic SHIM"],
+        ["6","GND","amplifier GND"],["9","GND","Qwiic SHIM"],["12","GPIO18 / PCM_CLK","amplifier BCLK"],
+        ["35","GPIO19 / PCM_FS","amplifier LRC"],["40","GPIO21 / PCM_DOUT","amplifier DIN"]],
+  preflight:[
+    "Meter both regulator outputs, unloaded. 5.1 V and 6.0 V.",
+    "Check continuity between the Pi's ground and the servo ground.",
+    "Confirm the servo rail is <b>not</b> connected to the PCA9685's VCC pin.",
+    "Check the 470 µF capacitor's polarity.",
+    "Power up with the servos <b>unplugged</b>. Confirm the Pi boots and <code>i2cdetect</code> finds <code>0x40</code>.",
+    "Plug in one servo. Run <code>rocky calibrate pan</code>. Smooth and quiet.",
+    "Plug in the second servo and repeat with <code>rocky calibrate tilt</code>."
+  ]
+};
+
+const FIXES = [
+ ["An axis moves the wrong way","Set <code>motion.&lt;axis&gt;.invert = true</code>."],
+ ["The head sits off-centre","<code>rocky calibrate</code>. Do not adjust the horn."],
+ ["A servo buzzes constantly at rest","Normal for digital servos. Lower <code>motion.idle_torque_off_s</code>. If it persists while driving, the head is out of balance — back to Stage 9."],
+ ["The head drifts down over time","Out of balance, or the tilt horn screws are loose."],
+ ["Rocky turns the wrong way to look at you","<code>vision.h_fov_deg</code> does not match your lens."],
+ ["Rocky overshoots then corrects back","<code>motion.tracking.gain</code> too high. Try 0.4."],
+ ["Grinding when turning","Grease or a stray ball in the race. Open Stage 4 and look."],
+ ["The face is blank","The display overlay. <code>dmesg | grep -i dsi</code>, and check the ribbon is fully seated."],
+ ["The camera enumerates but returns nothing","Camera ribbon in the display socket, or not fully seated."],
+ ["Rocky answers its own sentences","The microphone is hearing the speaker. Check <code>rocky check</code> shows a real audio backend."],
+ ["Rocky moves and chirps but never talks","No <code>ANTHROPIC_API_KEY</code>, or no speech engine. <code>rocky check</code> says which."]
+];
+
+/* ---------------- progress ---------------- */
+const KEY = "rocky-bench-v1";
+let state = {checked:{}, at:0};
+let db = null, remoteDoc = null;
+
+function load(){
+  try{ const raw = localStorage.getItem(KEY); if(raw) state = JSON.parse(raw); }catch(e){}
+  if(!state.checked) state = {checked:{}, at:0};
+}
+function persist(){
+  state.at = Date.now();
+  try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+  if(remoteDoc){ remoteDoc.set({checked:state.checked, at:state.at}).catch(()=>{}); }
+}
+function stepId(s,i){ return "s"+s.n+"."+i; }
+function stageDone(s){ return s.steps.every((_,i)=>state.checked[stepId(s,i)]); }
+function totals(){
+  let done=0, all=0;
+  STAGES.forEach(s=>s.steps.forEach((_,i)=>{all++; if(state.checked[stepId(s,i)]) done++;}));
+  return {done, all};
+}
+
+/* ---------------- rendering ---------------- */
+let view = null;
+
+function el(tag, cls, html){ const n=document.createElement(tag); if(cls) n.className=cls; if(html!=null) n.innerHTML=html; return n; }
+
+function renderRail(){
+  const rail = document.getElementById("rail");
+  rail.textContent = "";
+  STAGES.forEach(s=>{
+    const b = el("button","", "");
+    b.appendChild(document.createTextNode(String(s.n)));
+    if(stageDone(s)) b.appendChild(el("i","tick"));
+    b.setAttribute("aria-current", view===s.n ? "true":"false");
+    b.setAttribute("aria-label","Stage "+s.n+": "+s.title);
+    b.onclick = ()=>show(s.n);
+    rail.appendChild(b);
+  });
+  ["Wiring","Fixes"].forEach(name=>{
+    const b = el("button","",name);
+    b.setAttribute("aria-current", view===name.toLowerCase() ? "true":"false");
+    b.onclick = ()=>show(name.toLowerCase());
+    rail.appendChild(b);
+  });
+  const {done,all} = totals();
+  const pctv = all ? Math.round(done/all*100) : 0;
+  document.getElementById("pct").textContent = pctv+"%";
+  document.getElementById("meter").style.width = pctv+"%";
+}
+
+function figure(view, legend, wide){
+  const f = el("figure","plate");
+  const holder = el("div","img");
+  const scroller = wide ? el("div","scroller") : holder;
+  const img = new Image();
+  img.src = IMG + (wide ? view : "assembly-"+view+".png");
+  img.alt = wide ? view : "Rocky assembly figure";
+  img.loading = "lazy";
+  scroller.appendChild(img);
+  if(wide) holder.appendChild(scroller);
+  f.appendChild(holder);
+  if(wide){
+    const cap = el("figcaption");
+    cap.appendChild(el("div","plain","Full-width diagram — scroll it sideways to read."));
+    f.appendChild(cap);
+  }
+  if(legend && legend.length){
+    const cap = el("figcaption");
+    legend.forEach((txt,i)=>{
+      const row = el("div","key");
+      row.appendChild(el("span","disc", String(i+1)));
+      row.appendChild(el("span","", txt));
+      cap.appendChild(row);
+    });
+    f.appendChild(cap);
+  }
+  return f;
+}
+
+function renderStage(s){
+  const m = document.getElementById("main");
+  m.textContent = "";
+
+  const head = el("div","stage-head");
+  head.appendChild(el("div","stage-num", String(s.n).padStart(2,"0")));
+  const ht = el("div");
+  ht.appendChild(el("span","eyebrow","Stage "+s.n+" of 10"));
+  ht.appendChild(el("h2","",s.title));
+  head.appendChild(ht);
+  m.appendChild(head);
+
+  if(s.lede) m.appendChild(el("p","lede",s.lede));
+  if(s.fig) m.appendChild(figure(s.fig, s.legend));
+
+  if(s.kit && s.kit.length){
+    const k = el("div","kit");
+    k.appendChild(el("h3","","On the bench for this stage"));
+    const ul = el("ul");
+    s.kit.forEach(x=>ul.appendChild(el("li","",x)));
+    k.appendChild(ul);
+    m.appendChild(k);
+  }
+
+  const ol = el("ol","steps");
+  s.steps.forEach((st,i)=>{
+    const id = stepId(s,i);
+    const li = el("li");
+    if(state.checked[id]) li.className = "done";
+    const btn = el("button","step");
+    btn.type = "button";
+    btn.setAttribute("aria-pressed", state.checked[id] ? "true":"false");
+    const box = el("div","box"); box.appendChild(el("span","","✓"));
+    btn.appendChild(box);
+    const body = el("div","step-body");
+    body.appendChild(el("span","step-n", String(i+1).padStart(2,"0")));
+    body.appendChild(el("span","step-t", st.t));
+    btn.appendChild(body);
+    btn.onclick = ()=>{
+      state.checked[id] = !state.checked[id];
+      if(!state.checked[id]) delete state.checked[id];
+      persist();
+      li.classList.toggle("done", !!state.checked[id]);
+      btn.setAttribute("aria-pressed", state.checked[id] ? "true":"false");
+      renderRail();
+    };
+    li.appendChild(btn);
+    if(st.warn){
+      const w = el("div","warn");
+      w.appendChild(el("b","",st.warn[0]));
+      w.appendChild(el("span","",st.warn[1]));
+      body.appendChild(w);
+    }
+    if(st.code){
+      const pre = el("pre"); const c = el("code"); c.textContent = st.code; pre.appendChild(c);
+      body.appendChild(pre);
+    }
+    ol.appendChild(li);
+  });
+  m.appendChild(ol);
+
+  if(s.n === 1){
+    const a = el("div","aside");
+    a.appendChild(el("p","","Before Stage 2, get the electronics working on the bench — see <b>Wiring</b> in the bar above. Debugging a ribbon cable inside a closed head is miserable; debugging one on the desk is five minutes."));
+    m.appendChild(a);
+  }
+  if(s.n === 10){
+    const a = el("div","aside");
+    a.appendChild(el("p","","Calibration writes <code>centre_trim_deg</code> into <code>config.toml</code>. That is far easier than getting the horn splines mechanically perfect, and it is what the tool is for."));
+    m.appendChild(a);
+  }
+
+  nav(m, s.n);
+}
+
+function renderWiring(){
+  const m = document.getElementById("main");
+  m.textContent = "";
+  const head = el("div","stage-head");
+  const ht = el("div");
+  ht.appendChild(el("span","eyebrow","Before Stage 2"));
+  ht.appendChild(el("h2","","Wiring"));
+  head.appendChild(ht);
+  m.appendChild(head);
+  m.appendChild(el("p","lede",WIRING.lede));
+
+  WIRING.diagrams.forEach(d=>{
+    m.appendChild(el("h3","sec",d.title));
+    m.appendChild(el("p","lede",d.note));
+    m.appendChild(figure(d.src, null, true));
+  });
+
+  m.appendChild(el("h3","sec","GPIO pins in use"));
+  m.appendChild(table(["Pin","Signal","Goes to"], WIRING.gpio, [0]));
+  m.appendChild(el("div","aside","<p>Leave the amplifier's <b>GAIN</b> and <b>SD</b> pins unconnected. Floating gives 9 dB and mono <code>(L+R)/2</code>, which is what you want from a single speaker.</p><p><b>VCC and V+ are different pins on the PCA9685 and confusing them is the classic mistake.</b> VCC is 3.3 V logic from the Pi. V+ is the 6 V servo rail, on the green screw terminal.</p>"));
+
+  m.appendChild(el("h3","sec","The pan-joint harness"));
+  m.appendChild(el("p","lede","Eleven conductors cross the rotating joint. Use silicone-insulated wire — this bundle flexes thousands of times a week, and PVC work-hardens and cracks inside the insulation."));
+  m.appendChild(table(["Conductor","Gauge","Purpose"], WIRING.harness, [1]));
+
+  m.appendChild(el("h3","sec","Before the first power-up"));
+  const ol = el("ol","steps");
+  WIRING.preflight.forEach((t,i)=>{
+    const id = "w."+i;
+    const li = el("li"); if(state.checked[id]) li.className="done";
+    const btn = el("button","step"); btn.type="button";
+    btn.setAttribute("aria-pressed", state.checked[id] ? "true":"false");
+    const box = el("div","box"); box.appendChild(el("span","","✓")); btn.appendChild(box);
+    const body = el("div","step-body");
+    body.appendChild(el("span","step-n", String(i+1).padStart(2,"0")));
+    body.appendChild(el("span","step-t", t));
+    btn.appendChild(body);
+    btn.onclick = ()=>{
+      state.checked[id] = !state.checked[id];
+      if(!state.checked[id]) delete state.checked[id];
+      persist();
+      li.classList.toggle("done", !!state.checked[id]);
+      btn.setAttribute("aria-pressed", state.checked[id] ? "true":"false");
+    };
+    li.appendChild(btn);
+    ol.appendChild(li);
+  });
+  m.appendChild(ol);
+  m.appendChild(el("div","aside","<p>If a servo slams to one end and stays there, stop and switch off. It is almost always a signal wire on the wrong channel or a missing common ground.</p>"));
+  nav(m, null);
+}
+
+function renderFixes(){
+  const m = document.getElementById("main");
+  m.textContent = "";
+  const head = el("div","stage-head");
+  const ht = el("div");
+  ht.appendChild(el("span","eyebrow","When it does not behave"));
+  ht.appendChild(el("h2","","Fixes"));
+  head.appendChild(ht);
+  m.appendChild(head);
+  m.appendChild(table(["Symptom","Usually"], FIXES, []));
+  nav(m, null);
+}
+
+function table(heads, rows, monoCols){
+  const w = el("div","tablewrap");
+  const t = el("table");
+  const thead = el("thead"); const tr = el("tr");
+  heads.forEach(h=>tr.appendChild(el("th","",h)));
+  thead.appendChild(tr); t.appendChild(thead);
+  const tb = el("tbody");
+  rows.forEach(r=>{
+    const row = el("tr");
+    r.forEach((c,i)=>row.appendChild(el("td", monoCols.indexOf(i)>=0 ? "mono":"", c)));
+    tb.appendChild(row);
+  });
+  t.appendChild(tb); w.appendChild(t);
+  return w;
+}
+
+function nav(m, n){
+  const wrap = el("div","nav");
+  const prev = el("button","","← Previous");
+  const next = el("button","go","Next stage →");
+  prev.disabled = !(typeof n === "number" && n > 1);
+  next.disabled = !(typeof n === "number" && n < 10);
+  prev.onclick = ()=>show(n-1);
+  next.onclick = ()=>show(n+1);
+  if(typeof n !== "number"){ prev.disabled = true; next.textContent = "Back to Stage 1"; next.disabled = false; next.onclick = ()=>show(1); }
+  wrap.appendChild(prev); wrap.appendChild(next);
+  m.appendChild(wrap);
+
+  const f = el("div","foot");
+  const {done,all} = totals();
+  f.appendChild(el("span","", done+" of "+all+" steps ticked"));
+  const reset = el("button","","Clear progress");
+  reset.onclick = ()=>{ if(confirm("Clear every tick?")){ state.checked = {}; persist(); show(view); } };
+  f.appendChild(reset);
+  const sync = el("span","sync", db ? "synced" : "this device only");
+  f.appendChild(sync);
+  m.appendChild(f);
+}
+
+function show(v){
+  view = v;
+  if(v === "wiring") renderWiring();
+  else if(v === "fixes") renderFixes();
+  else renderStage(STAGES[v-1]);
+  renderRail();
+  window.scrollTo({top:0,behavior:"instant"});
+}
+
+/* ---------------- boot ---------------- */
+load();
+const firstOpen = STAGES.find(s=>!stageDone(s));
+show(firstOpen ? firstOpen.n : 10);
+
+(async ()=>{
+  if(!window.claude || !window.claude.use) return;
+  try{
+    db = await window.claude.use("db");
+    if(!db) return;
+    remoteDoc = db.doc("build/progress");
+    const snap = await remoteDoc.get();
+    const data = snap && snap.exists ? snap.data() : null;
+    if(data && data.at && data.at > (state.at||0) && data.checked){
+      state = {checked:data.checked, at:data.at};
+      try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+      show(view);
+    } else if(state.at){
+      remoteDoc.set({checked:state.checked, at:state.at}).catch(()=>{});
+    }
+    remoteDoc.onSnapshot(s=>{
+      const d = s && s.exists ? s.data() : null;
+      if(d && d.at && d.at > (state.at||0) && d.checked){
+        state = {checked:d.checked, at:d.at};
+        try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+        show(view);
+      }
+    });
+    show(view);
+  }catch(e){ db = null; }
+})();
+</script>

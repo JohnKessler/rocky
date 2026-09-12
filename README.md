@@ -96,6 +96,7 @@ cd hardware/cad && ./build_all.sh
 
 ```
 docs/            build guides and architecture notes
+  bench-guide.html  the assembly, one stage at a time, for a phone at the bench
 hardware/
   cad/           OpenSCAD source - rocky_params.scad holds every dimension
   stl/           exported, validated meshes
