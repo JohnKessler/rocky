@@ -1,0 +1,102 @@
+name: CI
+
+# Three things can break here independently: the Python runtime, the meshes,
+# and the generated documentation. They get three jobs so a red badge says
+# which one.
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: tests (python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      # Only the dev extra. The hardware and speech extras are the Pi's
+      # problem; the whole suite runs against simulated backends, and if a
+      # test ever needs picamera2 or pygame to pass, that is the bug.
+      - name: Install
+        run: pip install -e ".[dev]"
+
+      - name: Lint
+        run: ruff check software/ tests/
+
+      - name: Tests
+        run: pytest -q
+
+  generated:
+    name: meshes and generated docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # check_stl.py is stdlib-only, so this needs no install. It validates
+      # what is committed, which is what someone downloading the repo prints.
+      - name: Validate the committed meshes
+        run: python3 hardware/cad/check_stl.py hardware/stl/*.stl
+
+      # The wiring is described once, in wiring_data.py. validate() refuses to
+      # draw on a contradiction - a link crossing the pan joint without being
+      # marked as such, a GPIO pin claimed twice - so this is a real check and
+      # not just a rerun of a formatter.
+      - name: Regenerate the diagrams, tables and folded-in figures
+        run: |
+          python3 hardware/wiring/generate.py
+          python3 hardware/update_docs.py
+
+      - name: Fail if any generated file drifted
+        run: |
+          if ! git diff --exit-code --stat; then
+            echo "::error::Generated files are stale. Run hardware/wiring/generate.py and hardware/update_docs.py, then commit the result."
+            git diff
+            exit 1
+          fi
+
+  cad:
+    name: CAD rebuild
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # xvfb because OpenSCAD wants a display even to export a mesh.
+      - name: Install OpenSCAD
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends openscad xvfb
+
+      # Re-render all eleven parts from the .scad sources and validate what
+      # comes out. Deliberately NOT a byte comparison against the committed
+      # STLs. OpenSCAD's export is not reproducible: rendering one part twice
+      # from the same source with the same binary gives the same length, the
+      # same header and the same triangle count, but around 6% of the body
+      # bytes differ - CGAL does not fix the order it walks the facets in. A
+      # diff would therefore fail on every run and mean nothing. What must
+      # hold is that the sources still produce eleven watertight, manifold,
+      # single-shell meshes, which is what check_stl.py asserts.
+      - name: Render every part and validate the result
+        run: xvfb-run -a ./build_all.sh
+        working-directory: hardware/cad
