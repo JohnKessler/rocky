@@ -106,9 +106,15 @@ msv_horn_t    = 1.8;
 // ---------------------------------------------------------------------
 pod_w         = 46;    // across X: camera alongside the microphone
 pod_z0        = 68;    // where the ramp leaves the head shell
-pod_z1        = 100;    // top of the pod
+pod_z1        = 100;   // top of the pod
 pod_y_front   = 26;    // front face of the pod
 pod_wall      = 2.4;
+pod_y_rear    = -16;   // rear face of the pod, below the ramp
+pod_ramp_z    = 75;    // above this the rear face climbs at 45 degrees
+// Rear face of the brow at height z: flat below pod_ramp_z, 45 degrees above.
+function pod_ramp_y(z)  = pod_y_rear + max(0, z - pod_ramp_z);
+pod_cav_y1    = pod_y_front - pod_wall;      // inner face of the front wall
+pod_cav_x     = pod_w/2 - pod_wall;          // inner face of each side wall
 
 // ---------------------------------------------------------------------
 // Round display  -- MEASURE. Waveshare 4" DSI Round, 720x720.
@@ -144,7 +150,26 @@ yoke_arm_t    = 7.0;   // arm plate thickness, along X
 yoke_depth    = 26.0;  // arm / crossbar depth, along Y
 yoke_bar_h    = 12.0;  // crossbar height
 yoke_clear    = 1.6;   // air gap between head cheek and yoke arm
-tilt_range    = 26;    // +/- degrees of mechanical travel
+tilt_range    = 26;    // +/- degrees the software limits allow
+// Mechanical tilt end stop: a pin on the inner face of each yoke arm runs in
+// an arc slot milled through the head's cheek. Both parts read these numbers,
+// so the slot and the pin cannot drift apart.
+//
+// The stop sits tilt_stop_over degrees OUTSIDE tilt_range on purpose. Software
+// is the working limit; the stop is the backstop behind it, and a servo that
+// grinds against its end stop on every full-travel command is a servo that
+// strips. MECHANICAL_LIMITS in software/rocky/motion/kinematics.py holds
+// tilt_range, not tilt_range + tilt_stop_over.
+tilt_stop_over = 4;    // degrees of slack beyond tilt_range
+tilt_stop_d    = 5.0;  // pin diameter
+// The pin sits against the BACK face of the arm, not on its centreline: the
+// yoke prints on its back, so a peg there lies on the bed instead of starting
+// in mid-air 13 mm up.
+tilt_stop_y    = -(yoke_depth/2 - tilt_stop_d/2);   // pin axis, head frame
+tilt_stop_z    = -30;                               // pin axis, head frame
+// Where that pin crosses the shell: the cheek is a cylinder of head_d about
+// the Y axis, so the slot's depth below the surface follows from its z alone.
+function tilt_stop_surface_x(z) = sqrt(pow(head_d/2, 2) - pow(z, 2));
 pan_range     = 100;   // +/- degrees; hard stop in the base limits it
 
 // Tilt pivot hardware: 623ZZ bearing (3 x 10 x 4) on the idler side
@@ -163,6 +188,9 @@ cam_hole_dy   = 12.5;
 cam_lens_d    = 15.0;  // lens barrel clearance
 cam_lens_h    = 6.5;
 cam_ffc_w     = 16.0;
+// Where the board sits in the brow; pod_window's aperture keys off these.
+cam_lens_x    = -7.0;
+cam_lens_z    = 84.0;
 
 // ---------------------------------------------------------------------
 // Raspberry Pi 5 + Active Cooler
@@ -194,7 +222,37 @@ barrel_d      = 8.2;   // 2.1mm DC barrel jack panel cutout
 switch_d      = 12.2;  // 12mm latching rocker/pushbutton cutout
 harness_d     = 16.0;  // bore the pan-joint wire bundle passes through
 harness_r     = 30.0;  // radius from pan axis where the harness crosses
-usb_mic_d     = 14.0;  // USB gooseneck/stick mic body
+// Microphone: the flat commodity USB stick - Adafruit 3367, and the physically
+// identical part sold by Pi Hut, SunFounder, Cytron, Seeed and PiShop.
+//
+// It is stood on edge, so it needs 7 mm across the brow instead of 14. That is
+// the only orientation that fits: the camera board and its mounting bosses
+// reach x = +7 and the brow's inner wall is at x = +20.6, leaving 13.6 mm, and
+// a 14 mm cylindrical body centred where the old one was overhung the wall by
+// 1.4 mm. Capsule forward, behind the port in pod_window; USB plug back into
+// the cavity, where a right-angle adapter turns the lead down to the Pi.
+mic_body_x    = 7.0;   // across the brow - the tight axis
+mic_body_y    = 22.2;  // along the brow's depth, capsule forward
+mic_body_z    = 18.3;  // vertical
+
+// Where it sits, all derived so the cradle in head_back, the port in
+// pod_window and the stand-in in components cannot drift apart.
+// Against the brow's right inner wall and its front wall; the height is set
+// by the 45 degree rear ramp, which must clear the stick's back face by 1 mm.
+mic_x1        = pod_cav_x;                        // 20.6
+mic_x0        = mic_x1 - mic_body_x - slop;       // 13.3
+mic_y1        = pod_cav_y1;                       // 23.6, behind the front wall
+mic_y0        = mic_y1 - mic_body_y - slop;       //  1.1
+mic_z1        = pod_ramp_z + (mic_y0 - 1.0 - pod_wall) - pod_y_rear;   // 88.7
+mic_z0        = mic_z1 - mic_body_z - slop;       // 70.1
+// Port through the brow's front wall, behind the rosette in pod_window. Held
+// off the inner wall so it does not notch the brow's front/side corner, and a
+// little above the stick's mid-height so the rosette clears the plate's lower
+// edge - these sticks carry the capsule at the tip, so its exact height is the
+// one dimension the datasheets disagree on.
+mic_port_d    = 8.0;
+mic_port_x    = mic_x1 - mic_port_d/2 - 0.1;      // 16.5
+mic_port_z    = mic_z1 - 7;                       // 81.7
 
 // ---------------------------------------------------------------------
 // Cosmetics

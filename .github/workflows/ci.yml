@@ -91,14 +91,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends openscad xvfb
 
-      # Re-render all eleven parts from the .scad sources and validate what
+      # Re-render all ten parts from the .scad sources and validate what
       # comes out. Deliberately NOT a byte comparison against the committed
       # STLs. OpenSCAD's export is not reproducible: rendering one part twice
       # from the same source with the same binary gives the same length, the
       # same header and the same triangle count, but around 6% of the body
       # bytes differ - CGAL does not fix the order it walks the facets in. A
       # diff would therefore fail on every run and mean nothing. What must
-      # hold is that the sources still produce eleven watertight, manifold,
+      # hold is that the sources still produce ten watertight, manifold,
       # single-shell meshes, which is what check_stl.py asserts.
       - name: Render every part and validate the result
         run: xvfb-run -a ./build_all.sh

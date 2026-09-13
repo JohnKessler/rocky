@@ -191,11 +191,9 @@ const STAGES = [
   {t:"<code>head_back</code> — <b>1 × M3</b> — trim-weight post, rear"},
   {t:"<code>head_back</code> — <b>2 × M2</b> — amplifier pads, rear wall"},
   {t:"<code>head_back</code> — <b>4 × M2</b> — camera posts inside the brow"},
-  {t:"<code>head_back</code> — <b>2 × M2.5</b> — brow rim, for the window"},
-  {t:"<code>head_back</code> — <b>2 × M2</b> — brow, for the mic bracket"},
   {t:"<code>faceplate</code> — <b>4 × M2.5</b> — display carrier bosses"},
   {t:"Hand-thread a screw into every insert before moving on.",
-   warn:["No inserts for the tilt servo","Its two ear screws go straight into printed bosses as self-tappers."]}
+   warn:["Three things take no insert","The tilt servo's ear screws and <code>pod_window</code>'s two go straight into printed bosses as self-tappers. The microphone takes no fastener at all — it drops into a slot in the brow."]}
  ]},
 
 {n:2,title:"The base electronics",fig:"stage2",
@@ -238,7 +236,7 @@ const STAGES = [
   {t:"Lower the turntable onto the balls, aligning the horn with the servo's spline. Rotate slowly by hand until the splines engage and it seats."},
   {t:"Through the 6.5 mm access hole in the top of the hub, drive the servo's own centre screw into the shaft.",
    warn:["This is the only axial retention","Nothing else stops the head lifting off the base."]},
-  {t:"Turn the head by hand, both ways. Smooth, near-silent, and it should stop firmly against the printed post at about ±100°.",
+  {t:"Turn the head by hand, both ways. Smooth, near-silent, and it should stop firmly against the printed post at about ±106° — just outside the ±100° software limit, so the servo never reaches it under power.",
    warn:["If it grinds or rocks","Grinding is too much grease or a ball out of its pocket. Rocking is a missing ball."]}
  ]},
 
@@ -263,10 +261,11 @@ const STAGES = [
   {t:"<b>Ribbon cables.</b> Camera into <code>CAM/DISP 0</code>, display into <code>CAM/DISP 1</code>, blue stiffeners facing away from the board. Leave the far ends loose for now.",
    warn:["They are not interchangeable","22-pin 0.5 mm at the Pi, 15-pin 1 mm at the device. A camera cable in a display socket will not work and can damage the panel."]},
   {t:"<b>Camera.</b> Four M2 × 6 onto the posts inside the brow, lens forward. Connect the camera end of its ribbon."},
-  {t:"<b>Microphone.</b> Into the saddle of <code>mic_mount</code>, two M2 × 6 into the brow's inserts, port lined up behind the rosette of holes in <code>pod_window</code>. Route the USB lead down to the Pi — use the right-angle adapter, a straight plug fouls the shell."},
+  {t:"<b>Microphone.</b> No bracket, no screws. The flat stick goes in on edge — capsule forward, USB plug back — straight down into the slot right of the camera until it clicks past the nub at its mouth. Its front face then sits behind the port in the brow's wall and the rosette in <code>pod_window</code>. Route the USB lead down through the slot in the brow's floor — use the right-angle adapter, a straight plug fouls the shell.",
+   warn:["A firm push, not force","It is a friction fit. If it will not go, you have the wrong microphone: the slot is cut for the flat 22.2 × 18.3 × 7.0 mm stick in the BOM."]},
   {t:"<b>Amplifier.</b> Two M2 × 6 onto the pads on the rear wall, above the Pi. Wire I²S and 5 V from the header, and its speaker output down through the harness to the base.",
    warn:["Why it lives up here","So two analogue conductors cross the rotating joint instead of five digital ones. BCLK toggles at about 3 MHz; a flexing harness is not where you want that."]},
-  {t:"<b>Brow window.</b> <code>pod_window</code> onto the brow's rim, two M2.5 × 8. The lens should sit centred in its aperture without touching it."},
+  {t:"<b>Brow window.</b> <code>pod_window</code> flat onto the brow's front face, counterbores outward, two M2.5 × 8 self-tappers. Its apertures line up with the two bores through the wall behind them; the lens barrel stands in its aperture and should not touch it."},
   {t:"<b>Power and harness.</b> In through the 14 mm hole at the lower right of the shell. 5.1 V to the Pi's USB-C, I²C and tilt-servo conductors down to the base."}
  ]},
 
@@ -291,7 +290,8 @@ const STAGES = [
   {t:"<b>Right side.</b> M3 × 20 from outside the right arm, through the bearing, into the head's insert. Snug — the inner race clamps against the head, the outer race still turns freely."},
   {t:"<b>Left side.</b> With the head level and the tilt servo still centred, fit the round horn into the arm's recess and drive four M2 × 8 from <b>outside</b> the arm into the horn.",
    warn:["The horn splines set where level is","If the head ends up cocked, pull the four screws, lift the horn off one spline, and refit. Small trims are easier in software — <code>motion.tilt.centre_trim_deg</code>."]},
-  {t:"Tip the head through its full travel by hand. Free movement, stopping against the pins at about ±26°, crossbar clearing the head's lower corners at full tilt."}
+  {t:"Tip the head through its full travel by hand. Free movement, each yoke pin coming up against the end of its slot in the cheek at about ±31°, crossbar clearing the head's lower corners at full tilt.",
+   warn:["±31°, not ±26°","The software limit is ±26. The printed stop sits five degrees outside it on purpose — software is the working limit, the stop is the backstop behind it. Under power you should never reach the pins."]}
  ]},
 
 {n:9,title:"Balance the head",

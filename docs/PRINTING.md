@@ -30,8 +30,7 @@ Sensible defaults for a 0.4 mm nozzle:
 | `yoke` | **Lay it on its back** — rotate 90° about X so the U sits flat | 157 × 108 × 26 | 82 cm³ | **4 perim / 40%** — layers must run across the arms, not along them |
 | `head_back` | Rear face down, open side up | 142 × 171 × 57 | 117 cm³ | 3 perim / 20% · **light supports under the brow only** |
 | `faceplate` | **Front face down** | 142 × 142 × 10 | 40 cm³ | 3 perim / 25% · the part people look at, so print it well |
-| `pod_window` | Outside face down | 46 × 26 × 5 | 4 cm³ | 3 perim / 20% |
-| `mic_mount` | Flat back down | 29 × 12 × 10 | 2 cm³ | 3 perim / 20% |
+| `pod_window` | Outside face down | 46 × 26 × 3 | 3 cm³ | 3 perim / 20% |
 | `cable_clip` | Flat, as modelled — **print 4** | 26 × 21 × 7 | 1 cm³ ea | 3 perim / 20% |
 | `ball_cage` | Flat | 139 × 139 × 3 | 11 cm³ | 3 perim / 30% — thin, so let it cool |
 | `speaker_gasket` | Flat | 54 × 54 × 2 | 2 cm³ | **TPU 95A, 100% infill** — or skip it and use silicone |

@@ -1,0 +1,45 @@
+name: CAD features
+
+# Every cut in the .scad sources has to remove material that is actually there.
+# check_features.py renders each part once whole and then once per feature with
+# that feature commented out, and compares the volumes - about twenty-five
+# renders and twenty-five minutes. Far too slow to hang off every push, so it
+# lives in its own workflow behind a path filter and runs only when the CAD
+# sources change.
+#
+# It exists because two features in head_back.scad cut nothing at all for
+# several releases: mic_inserts() bored into open cavity, and tilt_stop_slots()
+# swept 9.4 mm outside the shell, which left the mechanical tilt end stop
+# absent. Both parts passed check_stl.py, because a cut that removes nothing
+# leaves a perfectly watertight, manifold, single-shell mesh.
+on:
+  push:
+    branches: [main]
+    paths: ["hardware/cad/**"]
+  pull_request:
+    paths: ["hardware/cad/**"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cad-features-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  features:
+    name: every feature cuts material
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      # xvfb because OpenSCAD wants a display even to export a mesh.
+      - name: Install OpenSCAD
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends openscad xvfb
+
+      - name: Check that every named feature changes its part
+        run: xvfb-run -a python3 -u check_features.py
+        working-directory: hardware/cad

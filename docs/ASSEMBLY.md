@@ -55,12 +55,14 @@ one forgotten insert after wiring means undoing work.
 | `head_back` | 1 × M3 | trim-weight post, rear |
 | `head_back` | 2 × M2 | amplifier pads, rear wall |
 | `head_back` | 4 × M2 | camera posts inside the brow |
-| `head_back` | 2 × M2.5 | brow rim, for the window |
-| `head_back` | 2 × M2 | brow, for the mic bracket |
 | `faceplate` | 4 × M2.5 | display carrier bosses |
 
-The tilt servo's two ear screws go straight into printed bosses as
-self-tappers — no inserts there.
+Three things in this robot take no insert at all. The tilt servo's two ear
+screws and `pod_window`'s two go straight into printed bosses as self-tappers —
+the brow's front wall is 2.4 mm and there is no printable way to thicken it
+from inside, which is far more material than a thread-forming screw needs and
+far less than a heat-set insert wants. And the microphone takes no fastener:
+it drops into a slot moulded into the brow.
 
 Check every one by hand-threading a screw before moving on.
 
@@ -160,7 +162,8 @@ pays back every time it moves.
    centre screw into the shaft. **This is what stops the head lifting off** —
    there is no other axial retention.
 8. Turn the head by hand, both ways. It should be smooth and near-silent, and
-   stop firmly against the printed post at about ±100°.
+   stop firmly against the printed post at about ±106° — a little outside the
+   ±100° software limit, so the servo never reaches it under power.
 
 If it grinds, there is too much grease or a ball is out of its pocket. If it
 rocks, a ball is missing.
@@ -203,7 +206,10 @@ Leave the left arm alone for now; the tilt servo horn is fitted at Stage 8.
 <!-- /figure -->
 
 
-Everything except the faceplate goes in through the open front.
+Everything except the faceplate goes in through the open front — except in the
+brow, which is closed at the front and open at the top. The camera and the
+microphone drop in from above, and `pod_window` then goes on the outside of the
+brow's front face as a bezel over the lens and mic bores rather than as a lid.
 
 1. **Tilt servo.** Centre it first, the same way you centred the pan servo.
    Fit it against the pad on the **left** inner cheek, output boss through the
@@ -215,13 +221,22 @@ Everything except the faceplate goes in through the open front.
    right to clear the tilt servo. Connect the cooler's fan to its header.
 3. **Ribbon cables.** Camera cable into `CAM/DISP 0`, display cable into
    `CAM/DISP 1`, blue stiffeners facing away from the board. Leave the far ends
-   loose for now.
+   loose for now. The camera's end reaches the brow through the slot in the
+   brow's floor, which is also where the microphone's lead comes down.
 4. **Camera.** Four M2 × 6 onto the posts inside the brow, lens pointing
    forward. Connect the camera end of its ribbon.
-5. **Microphone.** Into the saddle of `mic_mount`, two M2 × 6 into the brow's
-   inserts, its port lined up behind the rosette of holes in `pod_window`.
-   Route the USB lead down to the Pi — use the right-angle adapter, a straight
-   plug fouls the shell.
+5. **Microphone.** No bracket and no screws. The flat USB stick goes in on
+   edge, capsule forward, USB plug towards the back, and drops straight down
+   into the slot to the right of the camera until it clicks past the nub at the
+   slot's mouth. Its front face then sits against the brow's front wall, behind
+   that wall's port and the rosette of holes in `pod_window`. Route the USB
+   lead down through the slot in the brow's floor to the Pi — use the
+   right-angle adapter, a straight plug fouls the shell.
+
+   It is a deliberate friction fit, so it wants a firm push, not force. If it
+   will not go, you have the wrong microphone: the slot is cut for the flat
+   commodity stick in [BOM](BOM.md) item 5.3, 22.2 × 18.3 × 7.0 mm, and
+   `mic_body_x/y/z` in `rocky_params.scad` are what you change to fit another.
 6. **Amplifier.** Two M2 × 6 onto the pads on the rear wall, above the Pi.
    Wire I²S and 5 V to it from the header per [WIRING.md](WIRING.md), and its
    speaker output down through the harness to the base.
@@ -229,8 +244,10 @@ Everything except the faceplate goes in through the open front.
    It sits up here rather than beside the speaker so that two analogue
    conductors cross the rotating joint instead of five digital ones. BCLK
    toggles at about 3 MHz; a flexing harness is not where you want that.
-7. **Brow window.** `pod_window` onto the brow's rim, two M2.5 × 8. The lens
-   should sit centred in its aperture without touching it.
+7. **Brow window.** `pod_window` flat onto the brow's front face, counterbores
+   outward, two M2.5 × 8 self-tappers. Its lens aperture and mic rosette line
+   up with the two bores through the wall behind them; the lens barrel stands
+   in its aperture and should not touch it.
 8. **Power and harness.** Bring the harness in through the 14 mm hole at the
    lower right of the shell. 5.1 V to the Pi's USB-C, I²C and tilt-servo
    conductors down to the base.
@@ -281,9 +298,16 @@ Two people is easier. One to hold, one to drive screws.
    the head ends up cocked, pull the four screws, lift the horn off one spline,
    and refit. Small trims are easier in software —
    `motion.tilt.centre_trim_deg`.
-4. Tip the head through its full travel by hand. It should move freely and stop
-   against the pins at about ±26°, and the crossbar should clear the head's
-   lower corners at full tilt.
+4. Tip the head through its full travel by hand. It should move freely, and
+   each yoke pin should come up against the end of its slot in the cheek at
+   about ±31°, with the crossbar clearing the head's lower corners at full
+   tilt.
+
+   ±31°, not ±26°: the software limit is ±26, and the printed stop sits five
+   degrees outside it on purpose. Software is the working limit; the stop is
+   the backstop behind it, and a servo that grinds into its end stop on every
+   full-travel command is a servo that strips. You should not be able to reach
+   the pins under power — if you can, the limits in `config.toml` are wrong.
 
 ---
 

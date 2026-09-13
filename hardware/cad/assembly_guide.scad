@@ -125,7 +125,7 @@ module c_head_internals() {
     translate([-(head_d/2 - wall), 0, 0]) rotate([0, -90, 0]) rotate([0, 0, -90]) micro_servo();
     // camera and microphone in the sensor brow
     translate([-7, 18, 84]) rotate([-90, 0, 0]) camera_module_3();
-    translate([15, 10, 84]) usb_microphone();
+    translate([mic_x0, mic_y0, mic_z0]) usb_microphone();
     // I2S amplifier on the rear wall, above the Pi
     translate([0, -22, 47]) rotate([-90, 0, 0]) max98357a();
     // the pivot bearing on the right cheek

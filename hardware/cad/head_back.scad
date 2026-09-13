@@ -3,8 +3,10 @@
 // The main head shell: Pi, tilt servo, tilt pivot, faceplate posts,
 // trim-weight post, and the sensor brow that carries camera and mic.
 // Local origin: the TILT AXIS (head centre). Rocky faces +Y.
-// PRINT: rear face down, open side up. Every overhang is a 45 degree
-//        chamfer or better, so no supports are required.
+// PRINT: rear face down, open side up. Every overhang on the shell is a 45
+//        degree chamfer or better, but the brow is not: its front wall is a
+//        ceiling over the brow cavity in this orientation, so it wants light
+//        supports under the brow, as PRINTING.md says.
 // =====================================================================
 include <rocky_params.scad>
 use     <rocky_lib.scad>
@@ -32,13 +34,11 @@ fp_posts  = [[fp_r, 0], [-fp_r, 0], [0, -fp_r]];
 fp_y0     = 8;    // forward of the tilt servo's front face
 fp_y      = 19;
 // --- sensor brow -------------------------------------------------------
-ramp_z    = 75;                                       // ramp leaves the shell here
-pod_y0    = -16;
-cam_cx    = -7;
-cam_cz    = 84;
-mic_cx    = 15;
-
-function ramp_y(z) = pod_y0 + max(0, z - ramp_z);     // 45 degree underside
+// The brow's outline, its 45 degree rear ramp and the microphone's slot are
+// all in rocky_params.scad: pod_window and components.scad need the same
+// numbers, and the mic cradle here has to agree with the port there.
+cam_cx    = cam_lens_x;
+cam_cz    = cam_lens_z;
 
 // =====================================================================
 module shell_solid() {
@@ -63,14 +63,17 @@ module shell_cavity() {
 }
 
 // --- sensor brow ------------------------------------------------------
-// Built as a stack of thin slabs so the underside follows a true 45
-// degree ramp; the cavity is open at the front for assembly.
+// Built as a stack of thin slabs so the rear face follows a true 45 degree
+// ramp - which is the print-downward face, the head going on the bed rear
+// first. The cavity is open at the TOP, at z = pod_z1: the front wall is
+// solid, carrying the lens and mic bores, so the camera and the microphone go
+// in from above and pod_window is a bezel over the front rather than a lid.
 module pod_profile(inset = 0) {
     steps = 40;
     for (i = [0 : steps - 1]) {
         z0 = pod_z0 + i * (pod_z1 - pod_z0) / steps;
         z1 = pod_z0 + (i + 1) * (pod_z1 - pod_z0) / steps;
-        y0 = ramp_y(z1) + inset;
+        y0 = pod_ramp_y(z1) + inset;
         if (pod_y_front - inset > y0)
             translate([0, (y0 + pod_y_front - inset)/2, (z0 + z1)/2])
                 cube([pod_w - 2*inset, pod_y_front - inset - y0, z1 - z0 + 0.02],
@@ -85,7 +88,7 @@ module camera_posts() {
     for (x = [cam_cx - cam_hole_dx/2, cam_cx + cam_hole_dx/2],
          z = [cam_cz - cam_hole_dy/2, cam_cz + cam_hole_dy/2])
         translate([x, 0, z]) {
-            base = ramp_y(z) + pod_wall;
+            base = pod_ramp_y(z) + pod_wall;
             difference() {
                 translate([0, base, 0]) rotate([-90, 0, 0])
                     cylinder(d = 7, h = 18 - base);
@@ -95,16 +98,93 @@ module camera_posts() {
         }
 }
 
-module pod_window_inserts() {
+// Window fixings: M2.5 self-tappers, not heat-set inserts.
+//
+// The bore used to run y = 21.4..25.8 and stop 0.2 mm short of the front face,
+// leaving a membrane over both holes that no insert could be pressed through.
+// Opening it at the face exposes the other half of the problem: the brow's
+// front wall is 2.4 mm and an M2.5 insert wants 4.4, and there is no printable
+// way to thicken it from inside - in this print orientation anything added to
+// that wall's inner face is an overhang over open cavity. A thread-forming
+// screw into 2.4 mm of PETG holds far more than a 10 g cover plate needs, and
+// the tilt servo's ears already go in the same way.
+module pod_window_screws() {
     for (x = [-pod_w/2 + 6, pod_w/2 - 6])
-        translate([x, pod_y_front - 4.6, pod_z1 - 7]) rotate([-90, 0, 0])
-            cylinder(d = m25_insert_d, h = 4.4);
+        translate([x, pod_cav_y1 - 2, pod_z1 - 7]) rotate([-90, 0, 0])
+            cylinder(d = 2.1, h = pod_wall + 3);
 }
 
-module mic_inserts() {
-    for (z = [cam_cz - 9, cam_cz + 9])
-        translate([mic_cx, 16 - 4.2, z]) rotate([-90, 0, 0])
-            cylinder(d = m2_insert_d, h = 4.4);
+// The microphone: a cradle, not a bracket.
+//
+// What was here before were two M2 insert bores at y = 11.8..16 - open cavity
+// at that height, so they cut nothing and the brow shipped with no mic
+// mounting at all. Screwing a bracket in is not the fix: the free slot beside
+// the camera is 13.6 mm wide (the camera's mounting bosses reach x = +7, the
+// brow's inner wall is at +20.6), the stick on edge eats 7.3 of that, and an
+// M2 boss needs 5.6 mm more than is left. There is also nowhere to put a
+// screwdriver - the brow's front is walled and its only opening is the top.
+//
+// So the stick drops in from above into a slot moulded into the brow, trapped
+// forward by the front wall it speaks through, sideways between the inner wall
+// and one rib, and downward by the slot floor. A chamfered nub at the mouth
+// cams aside as it goes in and keeps it from shaking back out. No fasteners,
+// and the one thing the pocket costs - you reprint the head to fit a
+// different microphone - is why mic_body_* are parameters.
+module mic_pocket() {
+    translate([mic_x0, mic_y0, mic_z0])
+        cube([mic_body_x + slop + 2, mic_body_y + slop + 3, mic_body_z + slop]);
+}
+
+module mic_cradle() {
+    difference() {
+        union() {
+            // Clipped to the brow's cavity, so the back of the block IS the
+            // 45 degree ramp and nothing can poke out through a wall. The rib
+            // runs a little higher than the pocket to carry the nub.
+            intersection() {
+                union() {
+                    translate([mic_x0 - thin_wall, pod_y_rear, pod_z0])
+                        cube([thin_wall, pod_y_front - pod_y_rear,
+                              mic_z1 + 1.6 - pod_z0]);
+                    translate([mic_x0, pod_y_rear, pod_z0])
+                        cube([mic_body_x + slop + 1, pod_y_front - pod_y_rear,
+                              mic_z1 - pod_z0]);
+                }
+                pod_cavity();
+            }
+            // retaining nub, thickest at the mouth and tapering upward
+            translate([mic_x0, mic_y0 + 5, mic_z1]) rotate([-90, 0, 0])
+                linear_extrude(10) polygon([[0, 0], [0.5, 0], [0, -1.6]]);
+        }
+        mic_pocket();
+    }
+}
+
+// Port through the brow's front wall, behind pod_window's rosette. Without it
+// the microphone is sealed into a closed box: the wall here is solid 2.4 mm.
+module mic_port() {
+    translate([mic_port_x, pod_cav_y1 - 1, mic_port_z]) rotate([-90, 0, 0])
+        cylinder(d = mic_port_d, h = pod_wall + 2);
+}
+
+// And the camera's, for the same reason - the lens was looking at 2.4 mm of
+// PETG. The barrel reaches y = 25.6, so it sits inside this bore rather than
+// behind it.
+module cam_aperture() {
+    translate([cam_cx, pod_cav_y1 - 1, cam_cz]) rotate([-90, 0, 0])
+        cylinder(d = cam_lens_d + 1.0, h = pod_wall + 2);
+}
+
+// The brow's floor is a closed web: nothing joined its cavity to the head's,
+// so neither the camera's ribbon nor the mic's lead had a way down to the Pi.
+//
+// Placed under the camera, not under the microphone. The Camera Module 3's
+// FFC leaves the top edge of the board, folds back on itself and comes down
+// behind it at y = 8..17, so the slot sits where the ribbon actually falls and
+// is cam_ffc_w wide to match it. The mic's lead crosses to the same slot under
+// the camera board, which clears the brow floor by 4 mm.
+module brow_cable_slot() {
+    translate([-13, 2, pod_z0 - 6]) cube([cam_ffc_w, 15, 8]);
 }
 
 // --- tilt axis --------------------------------------------------------
@@ -117,7 +197,9 @@ module cheek_pad(side, cx, cz, w, h, t) {
     }
 }
 
-module tilt_servo_pad()  { cheek_pad(-1, 0, -6, 26, 46, sv_pad_t); }
+// 34 tall, not 46: the stop slot sweeps up to z = -24.6 at one end of its
+// arc, and the pad used to reach -29. Still 3 mm of pad beyond each ear screw.
+module tilt_servo_pad()  { cheek_pad(-1, 0, -6, 26, 34, sv_pad_t); }
 module tilt_pivot_pad()  { cheek_pad(+1, 0,  0, 26, 26, 6); }
 
 module tilt_servo_negatives() {
@@ -136,13 +218,26 @@ module tilt_pivot_negative() {
     }
 }
 
+// The mechanical tilt end stop: the arc each yoke pin sweeps through the
+// cheek. One of the three layers meant to bound tilt, and until now the only
+// one that did not exist - it was anchored at x = 65.4, z = 45, which is
+// 79.4 mm from the head's axis while the shell reaches 70, so all 41 cuts
+// fell 9.4 mm outside the material and the software limits were alone.
+//
+// The cheek is a cylinder about Y, so the surface is 4 mm deeper at the middle
+// of the sweep than at its ends: the cut starts inside the shell and runs out
+// past the outer face to cover both.
 module tilt_stop_slots() {
-    span = 2 * tilt_range + 8;
+    span  = tilt_range + tilt_stop_over;     // +/- degrees
+    steps = 40;
+    x0    = tilt_stop_surface_x(tilt_stop_z) - 5;
+    len   = head_d/2 + 2 - x0;
     for (side = [-1, 1])
-        for (i = [0 : 40])
-            rotate([180 - span/2 + i * span/40, 0, 0])
-                translate([side * (head_d/2 - wall - 2), 0, 45])
-                    rotate([0, side * 90, 0]) cylinder(d = 6.2, h = wall + 5, $fn = 16);
+        for (i = [0 : steps])
+            rotate([-span + i * 2 * span / steps, 0, 0])
+                translate([side * x0, tilt_stop_y, tilt_stop_z])
+                    rotate([0, side * 90, 0])
+                        cylinder(d = tilt_stop_d + 1.2, h = len, $fn = 16);
 }
 
 // --- interior mounts --------------------------------------------------
@@ -235,14 +330,16 @@ difference() {
         trim_post();
         camera_posts();
         amp_pads();
+        mic_cradle();
     }
     tilt_servo_negatives();
     tilt_pivot_negative();
     tilt_stop_slots();
-    pod_window_inserts();
-    mic_inserts();
+    pod_window_screws();
+    mic_port();
+    cam_aperture();
+    brow_cable_slot();
     rear_vents();
-    // microphone port through the brow's front rim is cut by pod_window
     // harness entry, low on the right cheek
     translate([0, -14, 0]) rotate([0, 45, 0])
         translate([0, 0, -head_d/2 - 4]) cylinder(d = 14, h = wall + 8);

@@ -12,7 +12,14 @@ use     <rocky_lib.scad>
 horn_recess_z = boss_top_z - turn_z;          // how far the spline boss intrudes
 stop_slot_r   = 44;
 stop_slot_w   = 11;                           // deck post is 8mm across
-stop_span     = 360 - 2*pan_range - 9;        // leaves +/- pan_range of travel
+// The slot's arc IS the travel, not the material left over between its ends:
+// this was 360 - 2*pan_range - 9 = 151 degrees, which let the post move only
+// +/-77 while the software limit is +/-100, so every large pan command drove a
+// standard servo into a printed post and stalled it. The post's 1.5 mm of
+// side clearance adds about 2 degrees at each end, so a 2*pan_range + 9 arc
+// catches at roughly +/-106 - outside the software limit, the same way round
+// as the tilt stop.
+stop_span     = 2*pan_range + 9;              // +/- pan_range, plus a margin
 
 module stop_slot() {
     // arc slot the deck's stop post rides in; its ends are the hard stops

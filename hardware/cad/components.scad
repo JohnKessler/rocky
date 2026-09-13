@@ -137,9 +137,17 @@ module bearing_623() {
     }
 }
 
+// Flat USB stick microphone, stood on edge. Origin at its minimum corner, so
+// it drops straight onto mic_x0 / mic_y0 / mic_z0 with no arithmetic at the
+// call site. Capsule forward, USB plug back, right-angle adapter on the plug.
 module usb_microphone() {
-    color(C_PLASTIC) rotate([0, 90, 0]) cylinder(d = usb_mic_d, h = 26, center = true);
-    color(C_METAL) translate([15, 0, 0]) rotate([0, 90, 0]) cube([5, 12, 12], center = true);
+    color(C_PLASTIC) cube([mic_body_x, mic_body_y, mic_body_z]);
+    color("#3a3f4b") translate([mic_body_x/2, mic_body_y - 0.4, mic_body_z/2])
+        rotate([-90, 0, 0]) cylinder(d = 4, h = 1.0, $fn = 16);
+    color(C_METAL) translate([mic_body_x/2 - 6, -11, mic_body_z/2 - 2.3])
+        cube([12, 11, 4.6]);
+    color("#1a1d23") translate([mic_body_x/2 - 7, -19, mic_body_z/2 - 4])
+        cube([14, 8, 8]);
 }
 
 // A short run of wire between two points, for the harness illustrations.

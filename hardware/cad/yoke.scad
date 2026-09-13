@@ -14,8 +14,11 @@ arm_in   = head_d/2 + yoke_clear;      // inner face of each arm
 arm_out  = arm_in + yoke_arm_t;
 piv_z    = tilt_axis_z - yoke_base_z;  // pivot height in local coords
 cap_r    = yoke_depth/2;               // rounded arm top
-stop_pin_r = 45;                       // tilt hard-stop pin radius
-stop_pin_d = 5;
+// Tilt hard-stop peg. Long enough to reach past the cheek's outer surface into
+// the arc slot in head_back: the cheek is a cylinder about Y, so that surface
+// stands 8 mm further out at the middle of the sweep than at its ends, and
+// tilt_stop_surface_x says where it is at the peg's height.
+stop_pin_len = arm_in - (tilt_stop_surface_x(tilt_stop_z) - 3);
 
 module arm(side) {                      // side = -1 left, +1 right
     hull() {
@@ -38,9 +41,12 @@ module crossbar() {
         cube([2*arm_out, yoke_depth, yoke_bar_h], center = true);
 }
 
+// Against the arm's BACK face rather than on its centreline: the yoke prints on
+// its back, so a peg there lies on the bed instead of starting 10 mm up in mid
+// air with nothing under it.
 module tilt_stop_pin(side) {
-    translate([side * arm_in, 0, piv_z - stop_pin_r])
-        rotate([0, -side * 90, 0]) cylinder(d = stop_pin_d, h = 3.2);
+    translate([side * arm_in, tilt_stop_y, piv_z + tilt_stop_z])
+        rotate([0, -side * 90, 0]) cylinder(d = tilt_stop_d, h = stop_pin_len);
 }
 
 module cable_channel() {
