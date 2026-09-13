@@ -92,16 +92,17 @@ buying each length and you will use the rest.
 
 | # | Part | Quantity | Notes |
 |---|------|----------|-------|
-| 7.1 | M3 heat-set inserts, 5.0 mm OD × 4.0 mm | 20 | Pilot bores are `m3_insert_d`. |
-| 7.2 | M2.5 heat-set inserts, 3.5 mm OD × 4.0 mm | 16 | Display, Pi, pan servo. Not the brow window — that takes self-tappers. |
-| 7.3 | M3 socket cap screws, 8 / 12 / 16 / 20 mm | 10 each | |
-| 7.4 | M2.5 screws, 6 / 10 / 16 mm | 10 each | |
-| 7.5 | M2 and M2.5 self-tapping screws, 8 mm | 10 each | Straight into printed bosses: M2 for the tilt servo's ears, M2.5 for `pod_window`. |
-| 7.6 | M3 × 20 socket cap screw | 1 | The tilt pivot — it passes through the 623ZZ bearing. |
-| 7.7 | M8 washers | 10–20 | Head trim weights. How many is a balance question, not a fixed number. |
-| 7.8 | Self-adhesive felt pads, 12 mm | 5 | Under the legs. |
-| 7.9 | Silicone wire, 20 AWG and 26 AWG | 2 m each | 20 AWG for power, 26 AWG for signals. Silicone, not PVC — the pan joint flexes this wire thousands of times. |
-| 7.10 | Heat-shrink, JST-XH connectors, cable ties | assorted | |
+| 7.1 | M3 heat-set inserts, 5.0 mm OD × 4.0 mm | 20 | Stage 1 uses 15. Pilot bores are `m3_insert_d`. |
+| 7.2 | M2.5 heat-set inserts, 3.5 mm OD × 4.0 mm | 30 | Display, Pi, pan servo, and the pads in the base. Stage 1 uses 24; the rest are for the one you melt in crooked. Not the brow window — that takes self-tappers. |
+| 7.3 | M2 heat-set inserts, 4.0 mm long | 10 | Camera posts and the amplifier pads, 6 in Stage 1. The bores in the CAD are `m2_insert_d` = 3.2 mm, so buy inserts specified for a 3.2 mm melt-in hole rather than by their OD. |
+| 7.4 | M3 socket cap screws, 8 / 12 / 16 / 20 mm | 10 each | |
+| 7.5 | M2.5 screws, 6 / 10 / 16 mm | 10 each | |
+| 7.6 | M2 and M2.5 self-tapping screws, 8 mm | 10 each | Straight into printed bosses: M2 for the tilt servo's ears, M2.5 for `pod_window`. |
+| 7.7 | M3 × 20 socket cap screw | 1 | The tilt pivot — it passes through the 623ZZ bearing. |
+| 7.8 | M8 washers | 10–20 | Head trim weights. How many is a balance question, not a fixed number. |
+| 7.9 | Self-adhesive felt pads, 12 mm | 5 | Under the legs. |
+| 7.10 | Silicone wire, 20 AWG and 26 AWG | 2 m each | 20 AWG for power, 26 AWG for signals. Silicone, not PVC — the pan joint flexes this wire thousands of times. |
+| 7.11 | Heat-shrink, JST-XH connectors, cable ties | assorted | |
 
 ## 8. Printing and consumables
 
