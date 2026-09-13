@@ -14,7 +14,9 @@ have in a drawer.
 > Vendor SKUs were last checked on **12 September 2026**. Three were wrong at
 > that point and are corrected below: the Qwiic cable had been retired, the
 > speaker had been relabelled and had lost its colour-coded leads, and the
-> microphone that was suggested does not fit the printed mount.
+> microphone that was suggested does not fit the printed mount. The brow has
+> since been recut around the flat stick instead (item 5.3), so the mount is
+> now the part that changed rather than the microphone.
 
 Vendor shorthand: **SF** SparkFun · **AF** Adafruit · **RPi** Raspberry Pi (or
 any approved reseller) · **WS** Waveshare · **\*** generic, buy anywhere.
@@ -64,7 +66,7 @@ any approved reseller) · **WS** Waveshare · **\*** generic, buy anywhere.
 |---|------|---------------|-------|-------|
 | 5.1 | MAX98357A I²S class-D amplifier | 3 W into 4 Ω, I²S in. The Pi 5 has no headphone jack, so this is required rather than optional. Mounts in the **head**, beside the Pi — that way the pan joint carries two analogue speaker conductors instead of five digital ones. | AF 3006 / SF | £6 |
 | 5.2 | Speaker, 40 mm, 4 Ω, 3–5 W | Mounts in the **base** floor, firing down into the gap the legs hold open. Frame diameter feeds `spk_d`; the body is about 20 mm deep. Adafruit now lists 3968 as **5 W** where distributors still print 3 W — same part, and the extra headroom is harmless since the amplifier only delivers 3.2 W. The January 2024 revision has a concave cone and **no longer ships red/black leads**, so identify polarity yourself rather than by colour. | AF 3968 / \* | £4 |
-| 5.3 | USB microphone, **cylindrical body ~14 mm** | Anything that enumerates as a USB audio input, but `mic_mount.scad` is a round saddle: the body must be a cylinder, and its diameter feeds `usb_mic_d`. A gooseneck or stick mic suits. **A flat USB-stick mic will not fit** — Adafruit's Mini USB Microphone (3367) is 22.2 × 18.3 × 7.0 mm and has no round body to clamp; use one only if you redraw the saddle as a rectangular pocket. A small far-field array (ReSpeaker USB Mic Array, or similar) is a large improvement over a single capsule if Rocky sits more than a metre away, and is a separate mounting problem again. | \* | £8–£55 |
+| 5.3 | USB microphone, **flat stick, 22.2 × 18.3 × 7.0 mm** | The brow is cut for this exact shape: Adafruit's Mini USB Microphone (3367), and the physically identical part sold by Pi Hut, SunFounder, Cytron, Seeed and PiShop. It needs no bracket and no screws — stood on edge it drops into a slot moulded into the brow. Dimensions feed `mic_body_x/y/z`. **A cylindrical gooseneck or barrel mic will not fit**: the slot beside the camera is 13.6 mm wide and a 14 mm body overhangs the brow's wall. Anything else means editing `mic_body_*` and reprinting `head_back`, so measure before you buy. A small far-field array (ReSpeaker USB Mic Array, or similar) is a large improvement over a single capsule if Rocky sits more than a metre away, and is a separate mounting problem again. | \* | £8–£55 |
 | 5.4 | USB-A right-angle adapter or short extension | The Pi's ports face sideways inside the head; a straight plug fouls the shell. | \* | £3 |
 
 ## 6. Power
@@ -91,10 +93,10 @@ buying each length and you will use the rest.
 | # | Part | Quantity | Notes |
 |---|------|----------|-------|
 | 7.1 | M3 heat-set inserts, 5.0 mm OD × 4.0 mm | 20 | Pilot bores are `m3_insert_d`. |
-| 7.2 | M2.5 heat-set inserts, 3.5 mm OD × 4.0 mm | 16 | Display, Pi, camera, brow window. |
+| 7.2 | M2.5 heat-set inserts, 3.5 mm OD × 4.0 mm | 16 | Display, Pi, pan servo. Not the brow window — that takes self-tappers. |
 | 7.3 | M3 socket cap screws, 8 / 12 / 16 / 20 mm | 10 each | |
 | 7.4 | M2.5 screws, 6 / 10 / 16 mm | 10 each | |
-| 7.5 | M2 self-tapping screws, 8 mm | 10 | Tilt servo ears, into printed bosses. |
+| 7.5 | M2 and M2.5 self-tapping screws, 8 mm | 10 each | Straight into printed bosses: M2 for the tilt servo's ears, M2.5 for `pod_window`. |
 | 7.6 | M3 × 20 socket cap screw | 1 | The tilt pivot — it passes through the 623ZZ bearing. |
 | 7.7 | M8 washers | 10–20 | Head trim weights. How many is a balance question, not a fixed number. |
 | 7.8 | Self-adhesive felt pads, 12 mm | 5 | Under the legs. |

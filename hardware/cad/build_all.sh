@@ -18,7 +18,7 @@ OUT=../stl
 mkdir -p "$OUT"
 
 PARTS=(base_shell base_deck turntable yoke head_back faceplate
-       pod_window mic_mount cable_clip ball_cage speaker_gasket)
+       pod_window cable_clip ball_cage speaker_gasket)
 
 if [ $# -gt 0 ]; then PARTS=("$@"); fi
 

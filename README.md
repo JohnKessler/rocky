@@ -85,7 +85,7 @@ Module 3 Wide in a sensor brow above the face, pan and tilt on a PCA9685,
 I²S amplifier driving a down-firing speaker in the base, one 12 V input.
 
 The CAD is parametric. Every dimension lives in one file, and the build script
-re-renders all eleven parts and checks each mesh is watertight, manifold and in
+re-renders all ten parts and checks each mesh is watertight, manifold and in
 one piece before you waste filament on it.
 
 ```bash

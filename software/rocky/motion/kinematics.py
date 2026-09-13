@@ -9,9 +9,14 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
-# The envelope the printed parts physically allow, from hardware/cad.
-# Software limits in config.toml are clamped into this; the printed stop post
-# in the base and the stop pins on the yoke are the layer behind that.
+# The working envelope, from hardware/cad. Software limits in config.toml are
+# clamped into this, and it deliberately sits INSIDE what the printed parts
+# allow: the stop post in the base catches pan at about +/-106 degrees and the
+# yoke's pins catch tilt at about +/-31, a few degrees outside each limit here.
+# That ordering is the point - these numbers are the limit Rocky works to, the
+# printed stops are the backstop behind them, and a servo that grinds into its
+# end stop on every full-travel command is a servo that strips. See
+# tilt_range / tilt_stop_over in hardware/cad/rocky_params.scad.
 MECHANICAL_LIMITS: dict[str, tuple[float, float]] = {
     "pan": (-100.0, 100.0),
     "tilt": (-26.0, 26.0),
